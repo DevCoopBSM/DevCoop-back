@@ -40,7 +40,7 @@ app.post('/api/signup', async (req, res) => {
             console.log(results);
 
             return res.status(400).json({
-                error: 'Email already exists'
+                error: '이미 존재하는 이메일입니다'
             })
         }
 
@@ -53,18 +53,17 @@ app.post('/api/signup', async (req, res) => {
         const re = /\S+@bssm.hs.kr/;
         const email_test_result = re.test(email);
         if (email_test_result === false) {
-            return res.status(400).json({ error: 'Invalid email format' });
+            return res.status(400).json({ error: '이메일 형식이 잘못되었습니다' });
         }
 
-        connection.query(
-            'INSERT INTO users(student_name, email, password) VALUES (?, ?, ?)', register_values
-        );
+        const sql = 'INSERT INTO users(student_name, email, password) VALUES (?, ?, ?)'
+        connection.query(sql, register_values);
 
         console.log('User registered successfully');
-        return res.status(200).json({ message: 'User registered successfully' });
+        return res.status(200).json({ message: '회원가입이 성공적으로 되었습니다' });
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: '내부 서버 오류' });
     }
 });
 
@@ -72,13 +71,11 @@ app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const [results] = await connection.promise().query(
-            'SELECT * FROM users WHERE email = ?',
-            email
-        );
+        const sql = 'SELECT * FROM users WHERE email = ?';
+        const [results] = await connection.promise().query(sql, email);
 
         if (results.length === 0) {
-            return res.status(401).json({ error: 'Invalid email or password' });
+            return res.status(401).json({ error: '이메일 또는 비밀번호가 잘못되었습니다' });
         }
 
         const user = results[0];
@@ -86,20 +83,20 @@ app.post('/api/login', async (req, res) => {
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
-            return res.status(401).json({ error: 'Invalid email or password' });
+            return res.status(401).json({ error: '이메일 또는 비밀번호가 잘못되었습니다' });
         }
 
         // 로그인 성공 처리
         console.log("로그인 성공")
-        return res.status(200).json({ message: 'Login successful' });
+        return res.status(200).json({ message: '로그인이 성공적으로 되었습니다' });
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: '내부 서버 오류가 발생하였습니다' });
     }
 });
 
 
 
-app.listen(port, (req, res) => {
+app.listen(port, () => {
     console.log(`WEB Server is running on port ${port}`)
 });
