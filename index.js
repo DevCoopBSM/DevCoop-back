@@ -21,13 +21,10 @@ app.use(express.json())
 connection.connect((err) => {
     try {
 
-    }catch(err){
+    } catch (err) {
         throw err;
-    } 
+    }
 })
-
-app.use('/', require('./routes/pages'))
-app.use('/auth', require('./routes/auth'))
 
 app.post("/api/pay", (req, res) => {
     const { minusPoint, code_number } = req.body;
@@ -40,16 +37,16 @@ app.post("/api/pay", (req, res) => {
         res.send("point save to database" + result);
     });
 });
-  
+
 app.post("/api/charge", (req, res) => {
     const { plusPoint, code_number } = req.body;
     const sql = "update users set point = point + ? where code_number = ?";
     connection.query(sql, [plusPoint, code_number], (err, result) => {
         try {
 
-        }catch(err){
+        } catch (err) {
             throw err;
-        } 
+        }
         res.send("point save to database" + result);
     });
 });
@@ -61,9 +58,9 @@ app.get("/api/check", (req, res) => {
     connection.query(sql, [email, password], (err, result) => {
         try {
 
-        }catch(err){
+        } catch (err) {
             throw err;
-        }        
+        }
         res.send(result);
     });
 });
