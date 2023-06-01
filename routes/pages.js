@@ -13,4 +13,15 @@ router.get('/register', (req, res) => {
     res.render('register')
 })
 
+router.get('/check', (req, res) => {
+    res.render('check')
+})
+
+router.get('/charge', (req, res) => {
+    res.render('charge')
+})
+
+router.get('/pay', (req, res) => {
+    res.render('pay')
+})
 module.exports = router;
