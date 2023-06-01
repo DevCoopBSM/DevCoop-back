@@ -22,7 +22,7 @@ connection.connect((err) => {
     try {
 
     }catch(err){
-
+        throw err;
     } 
 })
 
@@ -31,17 +31,16 @@ app.use('/auth', require('./routes/auth'))
 
 app.post("/api/pay", (req, res) => {
     const { minusPoint, code_number } = req.body;
-    const sql = "update users set point = point - ? where code_number = ?";
-    connection.query(sql, [minusPoint, code_number], (err, result) => {
+    const sql = "update users set point = point - ? where code_number = ? and point - ? >= 0";
+    connection.query(sql, [minusPoint, code_number, minusPoint], (err, result) => {
         try {
-
-        }catch(err){
-
-        } 
-      res.send("point save to database" + result);
+        } catch (err) {
+            throw err;
+        }
+        res.send("point save to database" + result);
     });
 });
-
+  
 app.post("/api/charge", (req, res) => {
     const { plusPoint, code_number } = req.body;
     const sql = "update users set point = point + ? where code_number = ?";
@@ -49,7 +48,7 @@ app.post("/api/charge", (req, res) => {
         try {
 
         }catch(err){
-
+            throw err;
         } 
         res.send("point save to database" + result);
     });
@@ -63,7 +62,7 @@ app.get("/api/check", (req, res) => {
         try {
 
         }catch(err){
-
+            throw err;
         }        
         res.send(result);
     });
