@@ -76,7 +76,7 @@ app.post('/api/signup', async (req, res) => {
 
         return res.status(200).json({ message: '회원가입이 성공적으로 되었습니다' });
     } catch (err) {
-        return res.status(500).json({ error: '내부 서버 오류' });
+        return res.status(500).json({ error: '내부 서버 오류가 발생하였습니다' });
     }
 });
 
