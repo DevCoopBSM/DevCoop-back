@@ -5,7 +5,7 @@ const dbconfig = require('./config/db')
 const cors = require("cors");
 const bcrypt = require('bcrypt');
 
-const port = 9000;
+const port = 6002;
 
 const connection = mysql.createConnection(dbconfig)
 
