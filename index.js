@@ -18,9 +18,9 @@ app.use(express.json())
 
 connection.connect((err) => {
     try {
-        console.log("Mysql connect...")
+        return res.status(200).json({ message: "데이터베이스에 성공적으로 접속하였습니다" });
     } catch (err) {
-        throw err;
+        return res.status(500).json({ error: "데이터베이스 접속 실패" });
     }
 })
 
@@ -29,8 +29,9 @@ app.post("/api/pay", (req, res) => {
     const sql = "update users set point = point - ? where code_number = ? and point - ? >= 0";
     connection.query(sql, [minusPoint, code_number, minusPoint], (err, result) => {
         try {
+		return res.status(200).json({ message: "결제를 성공하였습니다" });
         } catch (err) {
-            throw err;
+            return res.status(500).json({ error: "결제를 실패하였습니다");
         }
         res.send("point save to database" + result);
     });
@@ -41,9 +42,9 @@ app.post("/api/charge", (req, res) => {
     const sql = "update users set point = point + ? where code_number = ?";
     connection.query(sql, [plusPoint, code_number], (err, result) => {
         try {
-
+		return res.status(200).json({ message: "충전을 성공하였습니다" });
         } catch (err) {
-            throw err;
+            return res.status(500).json({ error: "포인트 충전 실패" });
         }
         res.send("point save to database" + result);
     });
@@ -55,21 +56,21 @@ app.get("/api/check", (req, res) => {
         "select point from users WHERE email = ?";
     connection.query(sql, [email], (err, result) => {
         try {
-
+		return res.status(200).json({ message: "포인트 조회 성공" });
         } catch (err) {
-            throw err;
+            return res.status(500).json({ error: "포인트 조회 실패" });
         }
         res.send(result);
     });
 });
 
 app.get("/api/studentinfo", (req, res) => {
-    const sql = "select student_number, student_name, code_number, from users";
+    const sql = "select student_number, student_name, code_number from users";
     connection.query(sql, (err, result) =>{
         try {
-            console.log("select");
+            return res.status(200).json({ message: "학생정보 조회에 성공했습니다" });
         } catch (err) {
-            throw err;
+            return res.status(500).json({ error: "조회를 실패하였습니다" });
         }
         res.send(result);
     });
