@@ -3,7 +3,7 @@ const mysql = require('mysql2')
 const dbconfig = require('../config/db')
 const bcrypt = require('bcrypt');
 const router = express.Router();
-const port = 9000;
+const port = 6002;
 
 const connection = mysql.createConnection(dbconfig)
 
