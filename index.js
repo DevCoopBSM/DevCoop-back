@@ -50,12 +50,24 @@ app.post("/api/charge", (req, res) => {
 });
 
 app.get("/api/check", (req, res) => {
-    const { email, password } = req.body;
+    const email = req.body;
     const sql =
-        "select student_name, point from users WHERE email = ? and password = ?";
-    connection.query(sql, [email, password], (err, result) => {
+        "select point from users WHERE email = ?";
+    connection.query(sql, [email], (err, result) => {
         try {
 
+        } catch (err) {
+            throw err;
+        }
+        res.send(result);
+    });
+});
+
+app.get("/api/studentinfo", (req, res) => {
+    const sql = "select student_number, student_name, code_number, from users";
+    connection.query(sql, (err, result) =>{
+        try {
+            console.log("select");
         } catch (err) {
             throw err;
         }
