@@ -31,7 +31,7 @@ app.post("/api/pay", (req, res) => {
         try {
 		return res.status(200).json({ message: "결제를 성공하였습니다" });
         } catch (err) {
-            return res.status(500).json({ error: "결제를 실패하였습니다");
+            return res.status(500).json({ error: "결제를 실패하였습니다" });
         }
         res.send("point save to database" + result);
     });
