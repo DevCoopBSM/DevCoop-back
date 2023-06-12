@@ -18,9 +18,9 @@ app.use(express.json())
 
 connection.connect((err) => {
     try {
-        return res.status(200).json({ message: "데이터베이스에 성공적으로 접속하였습니다" });
+        console.log("MySQL connect successfully");
     } catch (err) {
-        return res.status(500).json({ error: "데이터베이스 접속 실패" });
+        console.log("접속실패...");
     }
 })
 
