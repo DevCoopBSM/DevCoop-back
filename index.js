@@ -1,13 +1,16 @@
-const express = require('express') // NodeJS 웹 프레임워크
-const app = express()
-const mysql = require('mysql2')
-const dbconfig = require('./config/db')
-const cors = require("cors");
-const bcrypt = require('bcrypt');
+const express = require("express");
+const passport = require('passport');
+const mysql = require('mysql');
+const dbconfig = require('./config/db');
+const connection = mysql.createConnection(dbconfig);
+const router = express.Router();
+const app = express();
+const cors = require('cors');
+
+
+app.use(express.json());
 
 const port = 6002;
-
-const connection = mysql.createConnection(dbconfig)
 
 const signupRouter = require("./routes/signup");
 const loginRouter = require("./routes/login.js");
@@ -33,7 +36,6 @@ app.post("/api/pay", (req, res) => {
         } catch (err) {
             return res.status(500).json({ error: "결제를 실패하였습니다" });
         }
-        res.send("point save to database" + result);
     });
 });
 
@@ -60,7 +62,6 @@ app.get("/api/check", (req, res) => {
         } catch (err) {
             return res.status(500).json({ error: "포인트 조회 실패" });
         }
-        res.send(result);
     });
 });
 
@@ -72,13 +73,11 @@ app.get("/api/studentinfo", (req, res) => {
         } catch (err) {
             return res.status(500).json({ error: "조회를 실패하였습니다" });
         }
-        res.send(result);
     });
 });
 
 app.use("/api/signup", signupRouter);
 app.use("/api/login", loginRouter);
-
 
 // CORS 하용 설정하기.
 app.use((req, res, next) => {
