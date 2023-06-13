@@ -6,7 +6,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-const connection = mysql.createConnection(dbconfig)
+const connection = mysql.createConnection(dbconfig);
 
 router.use(express.json())
 
@@ -54,20 +54,20 @@ router.post('/', async (req, res) => {
         const expiresIn = '1h'; // 1시간 후에 토큰이 만료됨
 
         const signature = crypto
-            .createHmac("sha256", "secret_key", { expiresIn })
+            .createHmac("sha256", secretKey, { expiresIn })
             .update(`${encodedHeader}.${encodedPayload}`)
             .digest("base64")
             .replace(/=/g, "");
 
 
-        const accessToken = `${encodedHeader}.${encodedPayload}.${signature}`;
-        console.log(accessToken)
+        const token = `${encodedHeader}.${encodedPayload}.${signature}`;
+        console.log(token)
 
         // // 로그인 성공 처리
         // console.log("로그인 성공");
         return res.status(200).json({
             message: '로그인이 성공적으로 되었습니다',
-            jwt: accessToken
+            jwt: token
         });
     } catch (err) {
         console.error(err)
