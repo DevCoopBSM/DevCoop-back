@@ -7,7 +7,6 @@ const router = express.Router();
 const app = express();
 const cors = require('cors');
 
-
 app.use(express.json());
 
 const port = 6002;

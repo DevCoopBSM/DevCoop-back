@@ -1,78 +1,59 @@
-const express = require('express') // NodeJS 웹 프레임워크
-const mysql = require('mysql2')
-const dbconfig = require('../config/db')
+const express = require('express') ;// NodeJS 웹 프레임워크
+const mysql = require('mysql2');
+const dbconfig = require('../config/db');
 const bcrypt = require('bcrypt');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
-
+// const genToken = require('../utiles/jwt')
 const connection = mysql.createConnection(dbconfig);
+const token = require('../utiles/token.js');
 
-router.use(express.json())
+router.use(express.json());
+
+const updateToken = async(tokentype , email, token ) => {
+    const query = `UPDATE users SET ${tokentype} = ?  WHERE email = ?`;
+    const [results] = await connection.promise().query(query, [token, email]);
+    console.log(results);
+}
+
 
 router.post('/', async (req, res) => {
-    const { email, password } = req.body;
+    const email = req.query.email;
+    const password = req.query.password;
+    console.log(email)
 
     try {
         const query = 'SELECT * FROM users WHERE email = ?';
         const [results] = await connection.promise().query(query, email);
-
+        // console.log(results);
         if (results.length === 0) {
-            return res.status(401).json({ error: '이메일 또는 비밀번호가 잘못되었습니다' });
+            return res.status(401).json({ error: '이메일  잘못되었습니다' });
         }
 
         const user = results[0];
-
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        // const isPasswordValid = (password == user.password)
+        const isPasswordValid = bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
-            return res.status(401).json({ error: '이메일 또는 비밀번호가 잘못되었습니다' });
+            return res.status(401).json({ error: '비밀번호가 잘못되었습니다' });
         }
-
-        const Header = {
-            type: "JWT"
-        };
-
-        const encodedHeader = Buffer.from(JSON.stringify(Header)).toString('base64');
-
-        const salt = await bcrypt.genSalt(Number(8));
-        const hashedPassword = await bcrypt.hash(String(password), salt);
-
-        const Payload = {
-            email: email,
-            password: hashedPassword
-        }
-
-        const encodedPayload = Buffer.from(JSON.stringify(Payload)).toString('base64');
-
-        function generateRandomString(length) {
-            const randomBytes = crypto.randomBytes(length);
-            return randomBytes.toString('base64').slice(0, length);
-        } // secret key 랜덤 문자열 생성
-
-        const secretKey = generateRandomString(32);
-        const expiresIn = '1h'; // 1시간 후에 토큰이 만료됨
-
-        const signature = crypto
-            .createHmac("sha256", secretKey, { expiresIn })
-            .update(`${encodedHeader}.${encodedPayload}`)
-            .digest("base64")
-            .replace(/=/g, "");
-
-
-        const token = `${encodedHeader}.${encodedPayload}.${signature}`;
-        console.log(token)
-
-        // // 로그인 성공 처리
+        const accessToken = await token.genToken(email, password, "1h");
+        const refreshToken = await token.genToken(email, password, "14d");
+        updateToken("acc_token", email, accessToken);
+        // updateToken("ref_token", email, refreshToken);
+        // console.log([accessToken, refreshToken]);
         // console.log("로그인 성공");
         return res.status(200).json({
             message: '로그인이 성공적으로 되었습니다',
-            jwt: token
+            accToken: accessToken,
+            refToken: refreshToken
         });
+
+
     } catch (err) {
         console.error(err)
         return res.status(500).json({ error: '내부 서버 오류가 발생하였습니다' });
     }
 });
+
 
 module.exports = router;
