@@ -12,7 +12,7 @@ router.use(express.json());
 const updateToken = async(tokentype , email, token ) => {
     const query = `UPDATE users SET ${tokentype} = ?  WHERE email = ?`;
     const [results] = await connection.promise().query(query, [token, email]);
-    console.log(results);
+    // console.log(results);
 }
 
 
@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
     try {
         const query = 'SELECT * FROM users WHERE email = ?';
         const [results] = await connection.promise().query(query, email);
-        // console.log(results);
+        console.log(results);
         if (results.length === 0) {
             return res.status(401).json({ error: '이메일  잘못되었습니다' });
         }
@@ -36,16 +36,17 @@ router.post('/', async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).json({ error: '비밀번호가 잘못되었습니다' });
         }
-        const accessToken = await token.genToken(email, password, "1h");
-        const refreshToken = await token.genToken(email, password, "14d");
+        const accessToken = await token.genToken(email, user.student_name, "1h");
+        const refreshToken = await token.genToken(email, user.student_name, "14d");
         updateToken("acc_token", email, accessToken);
-        // updateToken("ref_token", email, refreshToken);
+        updateToken("ref_token", email, refreshToken);
         // console.log([accessToken, refreshToken]);
         // console.log("로그인 성공");
         return res.status(200).json({
             message: '로그인이 성공적으로 되었습니다',
             accToken: accessToken,
-            refToken: refreshToken
+            refToken: refreshToken,
+            point: user.point
         });
 
 
