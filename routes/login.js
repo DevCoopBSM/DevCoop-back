@@ -6,10 +6,11 @@ const router = express.Router();
 // const genToken = require('../utiles/jwt')
 const connection = mysql.createConnection(dbconfig);
 const token = require('../utils/token.js');
-
 router.use(express.json());
 
-const updateToken = async (tokentype, email, token) => {
+
+
+async function updateToken(tokentype, email, token) {
     const query = `UPDATE users SET ${tokentype} = ?  WHERE email = ?`;
     const [results] = await connection.promise().query(query, [token, email]);
     // console.log(results);
