@@ -27,33 +27,46 @@ connection.connect((err) => {
     }
 })
 
-app.post("/api/charge", (req, res) => {
-    const { plusPoint, code_number } = req.body;
-    const sql = "update users set point = point + ? where code_number = ?";
-    connection.query(sql, [plusPoint, code_number], (err, result) => {
-        try {
-            return res.status(200).json({ message: "충전을 성공하였습니다" });
-        } catch (err) {
-            return res.status(500).json({ error: "포인트 충전 실패" });
+app.post("/api/charges", (req, res) => {
+  const { charger, plusPoint, code_number } = req.body;
+  console.log(plusPoint, code_number);
+  const sql1 = "select student_number, point from users where code_number = ?";
+  const sql2 = "update users set point = point + ? where code_number = ?";
+  const sql3 = "select point from users where code_number = ?";
+  connection.query(sql1, [code_number], (err, result1) => {
+    if (err) {
+      throw err;
+    }
+    const value1 = result1[Object.keys(result1)[0]];
+    const response1 = {
+      학번: value1.student_number,
+      "원래 금액": value1.point,
+      "충전 금액": plusPoint,
+    };
+    connection.query(sql2, [plusPoint, code_number], (err, result2) => {
+      if (err) {
+        throw err;
+      }
+      connection.query(sql3, [code_number], (err, result3) => {
+        if (err) {
+          throw err;
         }
-    });
-});
+        const value2 = result3[Object.keys(result3)[0]];
 
-app.get("/api/check", (req, res) => {
-    const email = req.body;
-    const sql =
-        "select point from users WHERE email = ?";
-    connection.query(sql, [email], (err, result) => {
-        try {
-            return res.status(200).json({ message: "포인트 조회 성공" });
-        } catch (err) {
-            return res.status(500).json({ error: "포인트 조회 실패" });
-        }
+        const response2 = {
+          "최종 잔액": value2.point,
+          message: "성공",
+        };
+        const newresponse = { ...response1, ...response2 };
+        console.log(newresponse);
+        res.status(200).send(newresponse);
+      });
     });
+  });
 });
 
 app.get("/api/studentinfo", (req, res) => {
-    const verifyedToken = verifyToken(req.header('Authorization'))
+    const verifyedToken = verifyToken(req.header('access'))
     console.log(verifyedToken)
         if (verifyedToken != null) {
         const email = verifyedToken.email
@@ -74,7 +87,6 @@ app.get("/api/studentinfo", (req, res) => {
         })
     }   
 });
-
 
 app.post("/api/pays", (req, res) => {
     const { code_number, minusPoint } = req.body;
