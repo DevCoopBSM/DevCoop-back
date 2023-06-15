@@ -19,7 +19,7 @@ module.exports = {
         if (req.header('access') === undefined) throw Error('API 사용 권한이 없습니다.'); 
         const accessToken = verifyToken(req.header('access'));
         const query = 'SELECT * FROM users WHERE ref_token = ?';
-        const [results] = await connection.promise().query(query, req.header('refrash'));
+        const [results] = await connection.promise().query(query, req.header('refresh'));
         console.log(results)
         const refreshToken = results[0].ref_token;
         const email = results[0].email;

@@ -3,7 +3,6 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 
-
 const verifyToken = (token) => {
     try {
         return jwt.verify(token, process.env.SECRET_KEY);
@@ -26,7 +25,6 @@ const genToken = async (email, name, expiretime) => {
         email: email,
         name: name
     }
-
 
     const token = jwt.sign(Payload, process.env.SECRET_KEY, { expiresIn: expiretime });
 
