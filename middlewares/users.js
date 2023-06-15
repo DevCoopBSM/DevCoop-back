@@ -35,16 +35,16 @@ module.exports = {
                 //     expiresIn: '1h',
                 //     issuer: 'cotak'
                 // });
-                res.send('access', newAccessToken);
-                req.header('access') = newAccessToken;
+                res.status(200).send({access : newAccessToken});
+                //req.headers('access') = newAccessToken;
                 next();
             }
         } else {
             if (refreshToken === undefined) { // case3: access token은 유효하지만, refresh token은 만료된 경우
                 const newRefreshToken = genToken( email, student_name, "14d" );
                 updateToken("ref_token", email, refreshToken);
-                res.send('refresh', newRefreshToken);
-                req.header('refrash') = newRefreshToken;
+                res.status(200).send({refresh : newRefreshToken});
+                //req.headers('refrash') = newRefreshToken;
                 next();
             } else { // case4: accesss token과 refresh token 모두가 유효한 경우
                 console.log("Token are all right")
