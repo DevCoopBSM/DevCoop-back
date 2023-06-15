@@ -16,11 +16,10 @@ module.exports = {
          * access token 자체가 없는 경우엔 에러(401)를 반환
          * 클라이언트측에선 401을 응답받으면 로그인 페이지로 이동시킴
          */
-        if (req.header('accessToken') === undefined) throw Error('API 사용 권한이 없습니다.'); 
-        
-        const accessToken = verifyToken(req.header('accessToken'));
+        if (req.header('access') === undefined) throw Error('API 사용 권한이 없습니다.'); 
+        const accessToken = verifyToken(req.header('access'));
         const query = 'SELECT * FROM users WHERE ref_token = ?';
-        const [results] = await connection.promise().query(query, req.header('refrashToken'));
+        const [results] = await connection.promise().query(query, req.header('refrash'));
         console.log(results)
         const refreshToken = results[0].ref_token;
         const email = results[0].email;
@@ -36,16 +35,16 @@ module.exports = {
                 //     expiresIn: '1h',
                 //     issuer: 'cotak'
                 // });
-                res.send('accessToken', newAccessToken);
-                req.header('accessToken') = newAccessToken;
+                res.send('access', newAccessToken);
+                req.header('access') = newAccessToken;
                 next();
             }
         } else {
             if (refreshToken === undefined) { // case3: access token은 유효하지만, refresh token은 만료된 경우
                 const newRefreshToken = genToken( email, student_name, "14d" );
                 updateToken("ref_token", email, refreshToken);
-                res.send('refreshToken', newRefreshToken);
-                req.header('refrashToken') = newRefreshToken;
+                res.send('refresh', newRefreshToken);
+                req.header('refrash') = newRefreshToken;
                 next();
             } else { // case4: accesss token과 refresh token 모두가 유효한 경우
                 console.log("Token are all right")

@@ -14,6 +14,7 @@ const port = 6002;
 const signupRouter = require("./routes/signup");
 const loginRouter = require("./routes/login");
 const meRouter = require("./routes/me")
+const stinfoRouter = require("./routes/stinfo")
 
 app.use(express.urlencoded({ extended: false }))
 app.use(cors())
@@ -65,7 +66,10 @@ app.post("/api/charges", (req, res) => {
   });
 });
 
-app.get("/api/studentinfo", (req, res) => {
+// router.use((req, res, next) => checkTokens(req, res, next));
+
+app.get("/api/studentinfo", (req, res) =>  {
+
     const verifyedToken = verifyToken(req.header('access'))
     console.log(verifyedToken)
         if (verifyedToken != null) {
@@ -134,7 +138,7 @@ app.post("/api/pays", (req, res) => {
 app.use("/api/signup", signupRouter);
 app.use("/api/login", loginRouter);
 app.use("/api/me", meRouter);
-
+app.use("/api/studentinfo", stinfoRouter);
 // CORS 하용 설정하기.
 app.use((req, res, next) => {
     res.setHeader("Content-Type", "application/json");
