@@ -31,8 +31,8 @@ router.post('/', async (req, res) => {
 
         const user = results[0];
         // const isPasswordValid = (password == user.password)
-        const isPasswordValid = bcrypt.compare(password, user.password);
-
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        console.log(isPasswordValid);
         if (!isPasswordValid) {
             return res.status(401).json({ error: '비밀번호가 잘못되었습니다' });
         }

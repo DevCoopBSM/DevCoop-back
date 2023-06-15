@@ -2,11 +2,16 @@ const express = require('express');
 const router = express.Router();
 const {checkTokens} = require('../middlewares/users')
 const {verifyToken} = require('../utils/token')
+const {connection} = require('../utils/query')
+
 router.use(express.json());
 router.use((req, res, next)=> checkTokens(req, res, next));
-router.post('/', async (req, res) => {
-    const verifyedToken = verifyToken(req.header('access'))
-    const email = verifyedToken.email
+
+router.get('/', async (req, res) => {
+    console.log("hello");
+    const verifyedToken = verifyToken(req.header('access'));
+    const email = verifyedToken.email;
+    console.log(email);
     const sql = `select student_number, student_name, code_number, point from users WHERE email = '${email}' `;
     connection.query(sql, (err, result) => {
         try {
@@ -23,5 +28,6 @@ router.post('/', async (req, res) => {
         }
     })
 })
+
 
 module.exports = router;
