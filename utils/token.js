@@ -1,8 +1,23 @@
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-// const crypto = require('crypto');
 const dotenv = require("dotenv");
 dotenv.config();
+
+
+
+const verifyToken = (token) => {
+    try {
+        return jwt.verify(token, process.env.SECRET_KEY);
+    } catch (err) {
+        /**
+         * 다음과 같은 형태로 특정 에러에 대해서 핸들링해줄 수 있다. 
+         if (err.name === 'TokenExpiredError') {
+            return null
+         }
+         *
+         */
+        return null;
+    }
+}
 
 
 const genToken = async (email, name, expiretime) => {
@@ -13,12 +28,12 @@ const genToken = async (email, name, expiretime) => {
     }
 
 
-    const token = jwt.sign(Payload,process.env.SECRET_KEY,{expiresIn:expiretime} );
+    const token = jwt.sign(Payload, process.env.SECRET_KEY, { expiresIn: expiretime });
 
-    const verifiedToken = jwt.verify(token, process.env.SECRET_KEY);
-    console.log(verifiedToken);
-    
- 
+    //const verifiedToken = jwt.verify(token, process.env.SECRET_KEY);
+    //console.log(verifiedToken);
+
+
     return token
 };
 
@@ -51,8 +66,8 @@ const genToken = async (email, name, expiretime) => {
 
 //     // const verifiedToken = jwt.verify(token, process.env.SECRET_KEY);
 //     // console.log(verifiedToken);
-    
- 
+
+
 //     return token
 // };
 
@@ -60,3 +75,4 @@ const genToken = async (email, name, expiretime) => {
 
 
 exports.genToken = genToken;
+exports.verifyToken = verifyToken;

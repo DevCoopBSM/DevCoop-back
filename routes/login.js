@@ -1,15 +1,15 @@
-const express = require('express') ;// NodeJS 웹 프레임워크
+const express = require('express');// NodeJS 웹 프레임워크
 const mysql = require('mysql2');
 const dbconfig = require('../config/db');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 // const genToken = require('../utiles/jwt')
 const connection = mysql.createConnection(dbconfig);
-const token = require('../utiles/token.js');
+const token = require('../utils/token.js');
 
 router.use(express.json());
 
-const updateToken = async(tokentype , email, token ) => {
+const updateToken = async (tokentype, email, token) => {
     const query = `UPDATE users SET ${tokentype} = ?  WHERE email = ?`;
     const [results] = await connection.promise().query(query, [token, email]);
     // console.log(results);
@@ -17,8 +17,7 @@ const updateToken = async(tokentype , email, token ) => {
 
 
 router.post('/', async (req, res) => {
-    const email = req.query.email;
-    const password = req.query.password;
+    const { email, password } = req.body;
     console.log(email)
 
     try {
@@ -38,7 +37,7 @@ router.post('/', async (req, res) => {
         }
         const accessToken = await token.genToken(email, user.student_name, "1h");
         const refreshToken = await token.genToken(email, user.student_name, "14d");
-        updateToken("acc_token", email, accessToken);
+        // updateToken("acc_token", email, accessToken);
         updateToken("ref_token", email, refreshToken);
         // console.log([accessToken, refreshToken]);
         // console.log("로그인 성공");
@@ -46,10 +45,9 @@ router.post('/', async (req, res) => {
             message: '로그인이 성공적으로 되었습니다',
             accToken: accessToken,
             refToken: refreshToken,
+            name: user.student_name,
             point: user.point
         });
-
-
     } catch (err) {
         console.error(err)
         return res.status(500).json({ error: '내부 서버 오류가 발생하였습니다' });
