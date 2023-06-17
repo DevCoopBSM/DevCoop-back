@@ -10,6 +10,7 @@ router.use((req, res, next)=> checkTokens(req, res, next));
 router.get('/', async (req, res) => {
     console.log("hello");
     const verifyedToken = verifyToken(req.header('access'));
+    console.log(verifyedToken);
     const email = verifyedToken.email;
     console.log(email);
     const sql = `select student_number, student_name, code_number, point from users WHERE email = '${email}' `;
