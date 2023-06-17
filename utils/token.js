@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 dotenv.config();
-
-
+const {connection} = require('../utils/query')
 const verifyToken = (token) => {
     try {
         return jwt.verify(token, process.env.SECRET_KEY);
@@ -34,6 +33,16 @@ const genToken = async (email, name, expiretime) => {
 
     return token
 };
+
+
+
+
+const updateRefToken = async (email, token) => {
+    const query = `UPDATE users SET ref_token = ?  WHERE email = ?`;
+    connection.query(query, [token, email]);
+    console.log(`update refreshtoken`)
+}
+
 
 
 // const genToken = async (email, name, expiretime) => {
@@ -74,3 +83,4 @@ const genToken = async (email, name, expiretime) => {
 
 exports.genToken = genToken;
 exports.verifyToken = verifyToken;
+exports.updateRefToken = updateRefToken;

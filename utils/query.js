@@ -1,8 +1,8 @@
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const dbconfig = require('../config/db');
 const connection = mysql.createConnection(dbconfig);
 
 
-exports.connection = connection
+exports.connection = connection;
 
 
