@@ -16,7 +16,8 @@ module.exports = {
          * access token 자체가 없는 경우엔 에러(401)를 반환
          * 클라이언트측에선 401을 응답받으면 로그인 페이지로 이동시킴
          */
-        if (req.header('access') === undefined) return(res.status(400).send({message : "no AccToken"}));  
+        if (req.header('access') === undefined) return(res.status(403).send({message : "no AccToken"}));  
+        if (req.header('refresh') === undefined) return(res.status(403).send({message : "no RefToken"})); 
         const accessToken = verifyToken(req.header('access'));
         const query = 'SELECT * FROM users WHERE ref_token = ?';
         const [results] = await connection.promise().query(query, req.header('refresh'));
@@ -27,7 +28,7 @@ module.exports = {
         
         if (accessToken === null) {
             if (refreshToken === undefined) { // case1: access token과 refresh token 모두가 만료된 경우
-                res.status(400).send({message : "Expired RefSToken"});
+                return(res.status(403).send({message : "Expired RefSToken"}));
             } else { // case2: access token은 만료됐지만, refresh token은 유효한 경우
                 const newAccessToken = genToken( email, student_name, "1h" )
                 // jwt.sign({ userId, userName },S
@@ -35,17 +36,19 @@ module.exports = {
                 //     expiresIn: '1h',
                 //     issuer: 'cotak'
                 // });
-                res.header({access : newAccessToken});
+                res.header({access : newAccessToken})
+                res.status(403).send({message : "Expired AccSToken"});
                 //req.headers('access') = newAccessToken;
-                // next();
+                next();
             }
         } else {
             if (refreshToken === undefined) { // case3: access token은 유효하지만, refresh token은 만료된 경우
                 const newRefreshToken = genToken( email, student_name, "14d" );
                 updateToken("ref_token", email, refreshToken);
                 res.header({refresh : newRefreshToken});
+                res.status(403).send({message : "Expired Refoken"});
                 //req.headers('refrash') = newRefreshToken;
-                // next();
+                next();
             } else { // case4: accesss token과 refresh token 모두가 유효한 경우
                 console.log("Token are all right")
                 next();
