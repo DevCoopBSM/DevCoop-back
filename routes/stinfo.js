@@ -10,6 +10,7 @@ router.use((req, res, next)=> checkTokens(req, res, next));
 router.get('/', async (req, res) => {
     console.log("hello");
     const verifyedToken = verifyToken(req.header('access'));
+    if(verifyedToken==null) {return res.status(500).json({ error: "조회를 실패하였습니다" });}
     console.log(verifyedToken);
     const email = verifyedToken.email;
     console.log(email);
@@ -29,6 +30,3 @@ router.get('/', async (req, res) => {
         }
     })
 })
-
-
-module.exports = router;
