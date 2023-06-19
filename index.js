@@ -7,11 +7,12 @@ const cors = require('cors');
 // const {verifyToken} = require('./utils/token')
 app.use(express.json());
 
-const connection = mysql.createConnection(dbconfig)
+const port = 6002
 
 const signupRouter = require("./routes/signup");
 const loginRouter = require("./routes/login");
 const meRouter = require("./routes/me")
+const stinfoRouter = require("./routes/stinfo")
 
 app.use(express.urlencoded({ extended: false }))
 app.use(cors())
@@ -50,28 +51,28 @@ app.get("/api/check", (req, res) => {
     });
 });
 
-app.get("/api/studentinfo", (req, res) => {
-    const verifyedToken = verifyToken(req.header('Authorization'))
-    console.log(verifyedToken)
-        if (verifyedToken != null) {
-        const email = verifyedToken.email
-        const sql = `select student_number, student_name, code_number, point from users WHERE email = '${email}' `;
-        connection.query(sql, (err, result) => {
-            try {
-                const user = result[0]
-                return res.status(200).json({ 
-                    message: "학생정보 조회에 성공했습니다",
-                    number: user.student_number,
-                    name: user.student_name,
-                    code: user.code,
-                    point: user.point
-                 });
-            } catch (err) {
-                return res.status(500).json({ error: "조회를 실패하였습니다" });
-            }
-        })
-    }   
-});
+        // app.get("/api/studentinfo", (req, res) => {
+        //     const verifyedToken = verifyToken(req.header('Authorization'))
+        //     console.log(verifyedToken)
+        //         if (verifyedToken != null) {
+        //         const email = verifyedToken.email
+        //         const sql = `select student_number, student_name, code_number, point from users WHERE email = '${email}' `;
+        //         connection.query(sql, (err, result) => {
+        //             try {
+        //                 const user = result[0]
+        //                 return res.status(200).json({ 
+        //                     message: "학생정보 조회에 성공했습니다",
+        //                     number: user.student_number,
+        //                     name: user.student_name,
+        //                     code: user.code,
+        //                     point: user.point
+        //                 });
+        //             } catch (err) {
+        //                 return res.status(500).json({ error: "조회를 실패하였습니다" });
+        //             }
+        //         })
+        //     }   
+        // });
 
 
 app.post("/api/pays", (req, res) => {
@@ -120,6 +121,7 @@ app.post("/api/pays", (req, res) => {
 app.use("/api/signup", signupRouter);
 app.use("/api/login", loginRouter);
 app.use("/api/me", meRouter);
+app.use("/api/studentinfo", stinfoRouter);
 
 // CORS 하용 설정하기.
 app.use((req, res, next) => {
