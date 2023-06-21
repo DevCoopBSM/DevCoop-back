@@ -1,6 +1,6 @@
 const express = require("express");
 // const passport = require('passport');
-const {connection} = require('./utils/query')
+const {connection, pool} = require('./utils/query')
 // const router = express.Router();
 const app = express();
 const cors = require('cors');
@@ -25,6 +25,10 @@ connection.connect((err) => {
         throw err;
     }
 })
+
+
+
+
 
 app.post("/api/charge", (req, res) => {
     const { plusPoint, code_number } = req.body;
