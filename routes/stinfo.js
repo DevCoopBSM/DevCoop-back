@@ -8,7 +8,7 @@ router.use(express.json());
 router.use((req, res, next)=> checkTokens(req, res, next));
 
 router.get('/', async (req, res) => {
-    console.log("hello");
+    // console.log("hello");
     const verifyedToken = verifyToken(req.header('access'));
     console.log(verifyedToken);
         if(verifyedToken==null) { 
@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
                 point: user.point
                 });
         } catch (err) {
-            return res.status(500).json({ error: "조회를 실패하였습니다" });
+            // return res.status(500).json({ error: "조회를 실패하였습니다" });
         }
     })
 })

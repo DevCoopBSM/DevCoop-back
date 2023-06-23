@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
 
     try {
         const query = 'SELECT * FROM users WHERE email = ?';
-        console.log(connection)
+        // console.log(connection)
         const [results] = await connection.promise().query(query, email);
         console.log(results);
         if (results.length === 0) {
