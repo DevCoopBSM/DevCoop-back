@@ -10,7 +10,7 @@ router.post("/", (req, res) => {
     const {charger, plusPoint, code_number } = req.body;
     console.log(charger, plusPoint, code_number);
     const sql1 = "select student_number, point from users where code_number = ?"; //5000
-    const sql2 = "INSERT INTO user_log VALUES(?, CURRENT_TIMESTAMP, 1, ?, ?, ?)";
+    const sql2 = "INSERT INTO user_log VALUES(?, CURRENT_TIMESTAMP, 1, ?, ?, ?,\"test\")";
     const sql3 = "update users set point = point + ? where code_number = ?"; //-1000
     const sql4 = "select point from users where code_number = ?"; //4000 //4000 4000 4000 -2000 2000??
     connection.query(sql1, [code_number], (err, result1) => {
