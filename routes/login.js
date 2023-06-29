@@ -5,8 +5,6 @@ const {connection} = require("../utils/query")
 const { genToken, updateRefToken } = require('../utils/token');
 router.use(express.json());
 
-
-    
 router.post('/', async (req, res) => {
     const { email, password } = req.body;
     console.log(email)
