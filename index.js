@@ -14,7 +14,7 @@ const loginRouter = require("./routes/login");
 const meRouter = require("./routes/me");
 const stinfoRouter = require("./routes/stinfo")
 const adminloginRouter = require("./routes/adminlogin");
-const studentinfoRouter = require("./routes/studentinfo");
+const barcodeRouter = require("./routes/barcode");
 const chargeRouter = require("./routes/charge");
 const payRouter = require("./routes/pay");
 const userlogRouter = require("./routes/userlog");
@@ -63,7 +63,7 @@ app.use("/api/studentinfo", stinfoRouter);
 app.use("/api/adminlogin", adminloginRouter);
 app.use("/api/charge", chargeRouter);
 app.use("/api/pay", payRouter);
-app.use("/api/student",studentinfoRouter);
+app.use("/api/barcode",barcodeRouter);
 app.use("/api/userlog", userlogRouter);
 
 // CORS 하용 설정하기.

@@ -14,12 +14,12 @@ router.post("/", (req, res) => {
     const sql3 = "update users set point = point + ? where code_number = ?"; //-1000
     const sql4 = "select point from users where code_number = ?"; //4000 //4000 4000 4000 -2000 2000??
     connection.query(sql1, [code_number], (err, result1) => {
-      if (err) {
+      if (err) { 
         throw err;
       }
-      const value1 = result1[Object.keys(result1)[0]];  
+      const value1 = result1[Object.keys(result1)[0]]; 
       const now_point = value1.point;
-      const response1 = {
+      const response1 = { 
         학번: value1.student_number,
         "원래 금액": value1.point,
         "충전 금액": plusPoint,
