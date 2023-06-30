@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const {checkTokens} = require('../middlewares/users')
 const {verifyToken} = require('../utils/token')
 const {connection} = require('../utils/query')
 
 router.use(express.json());
+const {checkTokens} = require('../middlewares/users')
 router.use((req, res, next)=> checkTokens(req, res, next));
 
 router.get('/', async (req, res) => {
