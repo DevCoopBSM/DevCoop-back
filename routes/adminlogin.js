@@ -4,7 +4,7 @@ const router = express.Router();
 const {connection} = require("../utils/query")
 const { genToken, updateRefToken } = require('../utils/token');
 router.use(express.json());
-
+    
 router.post('/', async (req, res) => {
     const { email, password } = req.body;
     console.log(email)
@@ -25,6 +25,9 @@ router.post('/', async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).json({ error: '비밀번호가 잘못되었습니다' });
         }
+        if(user.is_admin != 1){
+            return res.status(401).json({error:'관리자가 아닙니다'});
+        }
         const accessToken = await genToken(email, user.student_name, "1h");
         const refreshToken = await genToken(email, user.student_name, "14d");
         // updateToken("acc_token", email, accessToken);
@@ -43,6 +46,4 @@ router.post('/', async (req, res) => {
         return res.status(500).json({ error: '내부 서버 오류가 발생하였습니다' });
     }
 });
-
-
 module.exports = router;
