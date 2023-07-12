@@ -1,13 +1,15 @@
 const express = require("express");
 const {connection} = require("../utils/query")
+const {checkAdminTokens} = require('../middlewares/users')
 const router = express.Router();
 router.use(express.json());
+router.use((req, res, next)=> checkAdminTokens(req, res, next));
 
 router.post("/", (req, res) => {
-    const { code_number, minusPoint } = req.body;
+    const { code_number, minusPoint, charger } = req.body;
     console.log(minusPoint);
     const sql1 = "select student_number, point from users where code_number = ?";
-    const sql2 = "INSERT INTO user_log VALUES(?, CURRENT_TIMESTAMP, 0, ?, ?,'')";
+    const sql2 = "INSERT INTO user_log VALUES(?, CURRENT_TIMESTAMP, 0, ?, ?, ?,\"test\")";
     const sql3 =
       "update users set point = point - ? where code_number = ? and point - ? >= 0";
   
@@ -22,7 +24,7 @@ router.post("/", (req, res) => {
         "이전 잔액": value.point,
         "결제된 금액": minusPoint,
       };
-      connection.query(sql2, [code_number, minusPoint, value.point], (err, result2)=>{
+      connection.query(sql2, [code_number, minusPoint, value.point, charger], (err, result2)=>{
         if(err){
           throw err;
         }
@@ -53,3 +55,4 @@ router.post("/", (req, res) => {
 });
 
 module.exports = router;
+
