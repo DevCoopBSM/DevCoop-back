@@ -7,7 +7,7 @@ router.use((req, res, next)=> checkAdminTokens(req, res, next));
 
 router.post("/", (req, res) => {
     const { code_number, minusPoint, charger } = req.body;
-    console.log(minusPoint);
+    console.log(code_number, minusPoint, charger);
     const sql1 = "select student_number, point from users where code_number = ?";
     const sql2 = "INSERT INTO user_log VALUES(?, CURRENT_TIMESTAMP, 0, ?, ?, ?,\"test\")";
     const sql3 =
@@ -18,13 +18,18 @@ router.post("/", (req, res) => {
       if (err) {
         throw err;
       }
+      console.log("success");
       const value = result1[Object.keys(result1)[0]];
       const response1 = {
         학번: value.student_number,
         "이전 잔액": value.point,
         "결제된 금액": minusPoint,
       };
+      if(value.point - minusPoint < 0){
+        return res.status(400).json({message:"잘못된 요청입니다. 잔액초과"});
+      }
       connection.query(sql2, [code_number, minusPoint, value.point, charger], (err, result2)=>{
+        console.log("success");
         if(err){
           throw err;
         }
