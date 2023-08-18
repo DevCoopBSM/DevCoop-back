@@ -7,7 +7,7 @@ router.get("/", (req, res) => {
   const { id } = req.query;
   //if(type == 0){
   console.log("get success");
-  const sql = `select inner_point, users.point, users.point-inner_point as total, student_name 
+  const sql = `select inner_point, users.point, users.point-inner_point as total, users.student_name 
     from user_log, users  
     where user_log.code_number = ${id} and users.code_number = user_log.code_number and user_log.type = 0
     order by date desc limit 1`;
