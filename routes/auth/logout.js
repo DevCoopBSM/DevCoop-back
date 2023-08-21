@@ -1,11 +1,11 @@
 const express = require('express');// NodeJS 웹 프레임워크
 const mysql = require('mysql2');
-const dbconfig = require('../config/db');
+const dbconfig = require('../../config/db');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 // const genToken = require('../utiles/jwt')
 const connection = mysql.createConnection(dbconfig);
-const token = require('../utils/token.js');
+const token = require('../../utils/token.js');
 router.use(express.json());
 
 

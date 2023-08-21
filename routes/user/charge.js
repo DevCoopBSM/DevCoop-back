@@ -1,6 +1,6 @@
 const express = require("express");
-const { connection } = require("../utils/query");
-const { checkAdminTokens } = require("../middlewares/users");
+const { connection } = require("../../utils/query");
+const { checkAdminTokens } = require("../../middlewares/users");
 const router = express.Router();
 router.use(express.json());
 router.use((req, res, next) => checkAdminTokens(req, res, next));

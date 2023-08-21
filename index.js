@@ -7,20 +7,24 @@ const cors = require("cors");
 // const {verifyToken} = require('./utils/token')
 app.use(express.json());
 const port = 6002;
-const signupRouter = require("./routes/signup");
-const loginRouter = require("./routes/login");
-const meRouter = require("./routes/me");
-const stinfoRouter = require("./routes/stinfo");
-const adminloginRouter = require("./routes/adminlogin");
-const barcodeRouter = require("./routes/barcode");
-const chargeRouter = require("./routes/charge");
-const payRouter = require("./routes/pay");
-const useuserlogRouter = require("./routes/useuserlog");
-const chargeCompleteRouter = require("./routes/chagecomplete");
-const payCompleteRouter = require("./routes/paycomplete");
-const adminUseUserLogRouter = require("./routes/adminUseUserLog");
-const adminChargeUserLogRouter = require("./routes/adminChargeUserLog");
-const chargeUserLogRouter = require("./routes/chargeuserlog");
+const signupRouter = require("./routes/auth/signup");
+const loginRouter = require("./routes/auth/login");
+const meRouter = require("./routes/user/me");
+const stinfoRouter = require("./routes/user/stinfo");
+const adminloginRouter = require("./routes/auth/adminlogin");
+const barcodeRouter = require("./routes/user/barcode");
+const chargeRouter = require("./routes/user/charge");
+const payRouter = require("./routes/user/pay");
+const useuserlogRouter = require("./routes/user/useuserlog");
+const chargeCompleteRouter = require("./routes/user/chagecomplete");
+const payCompleteRouter = require("./routes/user/paycomplete");
+const adminUseUserLogRouter = require("./routes/admin/adminUseUserLog");
+const adminChargeUserLogRouter = require("./routes/admin/adminChargeUserLog");
+const chargeUserLogRouter = require("./routes/user/chargeuserlog");
+const chargeLogRouter = require("./routes/user/chargelog");
+const payLogRouter = require("./routes/user/paylog");
+const allUserRouter = require("./routes/user/alluser");
+const allChargeRouter = require("./routes/user/allcharge");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
@@ -33,29 +37,6 @@ connection.connect((err) => {
     throw err;
   }
 });
-
-// app.get("/api/studentinfo", (req, res) => {
-//     const verifyedToken = verifyToken(req.header('Authorization'))
-//     console.log(verifyedToken)
-//         if (verifyedToken != null) {
-//         const email = verifyedToken.email
-//         const sql = `select student_number, student_name, code_number, point from users WHERE email = '${email}' `;
-//         connection.query(sql, (err, result) => {
-//             try {
-//                 const user = result[0]
-//                 return res.status(200).json({
-//                     message: "학생정보 조회에 성공했습니다",
-//                     number: user.student_number,
-//                     name: user.student_name,
-//                     code: user.code,
-//                     point: user.point
-//                 });
-//             } catch (err) {
-//                 return res.status(500).json({ error: "조회를 실패하였습니다" });
-//             }
-//         })
-//     }
-// });
 
 app.use("/api/signup", signupRouter);
 app.use("/api/login", loginRouter);
@@ -71,6 +52,10 @@ app.use("/api/paycomplete", payCompleteRouter);
 app.use("/api/adminuseuserlog", adminUseUserLogRouter);
 app.use("/api/adminchargeuserlog", adminChargeUserLogRouter);
 app.use("/api/chargeuserlog", chargeUserLogRouter);
+app.use("/api/chargelog", chargeLogRouter);
+app.use("/api/paylog", payLogRouter);
+app.use("/api/alluser", allUserRouter);
+app.use("/api/allcharge", allChargeRouter);
 
 // CORS 하용 설정하기.
 app.use((req, res, next) => {
