@@ -1,8 +1,9 @@
 FROM node:18.16.0
 
-WORKDIR /usr/src/app
+WORKDIR /index
 
 COPY package*.json ./
+COPY package-lock.json .
 
 RUN npm install
 

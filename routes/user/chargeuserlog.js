@@ -1,5 +1,5 @@
 const express = require("express");
-const { connection } = require("../utils/query");
+const { connection } = require("../../utils/query");
 const router = express.Router();
 router.use(express.json());
 
