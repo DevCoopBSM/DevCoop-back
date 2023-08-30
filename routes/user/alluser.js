@@ -8,10 +8,8 @@ router.get("/", (req, res) => {
   const sql = `select student_number, code_number from users`;
   connection.query(sql, (err, result) => {
     if (err) {
-      console.log(err);
       return res.status(500).send("Internal Server Error");
     }
-    console.log(result);
     return res.status(200).send(result);
   });
 });

@@ -13,7 +13,6 @@ router.post("/", async (req, res) => {
     const query = "SELECT * FROM users WHERE email = ?";
     // console.log(connection)
     const [results] = await connection.promise().query(query, email);
-    console.log(results);
     if (results.length === 0) {
       return res.status(401).json({ error: "이메일이 잘못되었습니다" });
     }
@@ -42,7 +41,6 @@ router.post("/", async (req, res) => {
       point: user.point,
     });
   } catch (err) {
-    console.error(err);
     return res.status(500).json({ error: "내부 서버 오류가 발생하였습니다" });
   }
 });

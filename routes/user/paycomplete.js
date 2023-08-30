@@ -5,17 +5,12 @@ router.use(express.json());
 
 router.get("/", (req, res) => {
   const { id } = req.query;
-  //if(type == 0){
-  console.log("get success");
   const sql = `select inner_point, users.point, users.point-inner_point as total, users.student_name 
     from user_log, users  
     where user_log.code_number = ? and users.code_number = user_log.code_number and user_log.type = 0
     order by date desc limit 1`;
-  console.log("check");
-
   connection.query(sql, id, (err, result) => {
     if (err) throw err;
-    console.log("show");
 
     if (result && result.length > 0) {
       const value1 = result[Object.keys(result)[0]];
@@ -24,7 +19,6 @@ router.get("/", (req, res) => {
       const new_total = value1.total;
       const new_name = value1.student_name;
 
-      console.log(value1);
       return res.status(200).json({
         message: "결제완료",
         inner_point: new_inner_point,

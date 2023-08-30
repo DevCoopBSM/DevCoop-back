@@ -5,7 +5,6 @@ const { checkTokens } = require("../../middlewares/users");
 router.use(express.json());
 router.post("/", async (req, res) => {
   const state = checkTokens(req, res);
-  console.log([req.header("accessToken"), req.header("refrashToken")]);
   return res.status(200).json();
   // try {
   //     const query = 'SELECT * FROM users WHERE email = ?';

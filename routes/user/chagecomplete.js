@@ -20,7 +20,6 @@ router.get("/", (req, res) => {
       const new_total = value1.total;
       const new_name = value1.student_name;
 
-      console.log(value1);
       return res.status(200).json({
         message: "충전완료",
         inner_point: new_inner_point,

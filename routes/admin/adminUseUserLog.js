@@ -8,7 +8,6 @@ router.post("/", (req, res) => {
 
   // 클라이언트가 잘못된 값을 보낸 경우 처리
   if (!clientbarcode) {
-    console.log("clientbarcode is wrong");
     return res.status(400).send("Bad Request: Missing clientbarcode");
   }
 
@@ -16,10 +15,8 @@ router.post("/", (req, res) => {
   const sql = `select date, inner_point, type from user_log where code_number = ${clientbarcode} and type = 0 order by date desc limit 10`;
   connection.query(sql, (err, result) => {
     if (err) {
-      console.log(err);
       return res.status(500).send("Internal Server Error");
     }
-    console.log(result);
     return res.status(200).send(result);
   });
 });

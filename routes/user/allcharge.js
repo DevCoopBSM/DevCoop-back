@@ -30,12 +30,9 @@ router.post("/", async (req, res) => {
         .promise()
         .query(sql2, [barcode, plusPoint, point, charger, studentName]);
       await connection.promise().query(sql3, [plusPoint, barcode]);
-      console.log(`Inserted data for barcode ${barcode}`);
     }
-    console.log("insert clear");
     return res.status(200).send("ok");
   } catch (err) {
-    console.error("Error in batch insert:", err);
     res.status(500).json({ error: "Error in batch insert" });
   }
 });

@@ -7,7 +7,6 @@ router.use((req, res, next) => checkAdminTokens(req, res, next));
 
 router.post("/", (req, res) => {
   const { code_number, minusPoint, charger } = req.body;
-  console.log(code_number, minusPoint, charger);
   const sql1 =
     "select student_number, point, student_name from users where code_number = ?";
   const sql2 =
@@ -20,7 +19,6 @@ router.post("/", (req, res) => {
     if (err) {
       throw err;
     }
-    console.log("success");
     const value = result1[Object.keys(result1)[0]];
     const response1 = {
       학번: value.student_number,
@@ -35,7 +33,6 @@ router.post("/", (req, res) => {
       sql2,
       [code_number, minusPoint, value.point, charger, value.student_name],
       (err, result2) => {
-        console.log("success");
         if (err) {
           throw err;
         }
@@ -56,7 +53,6 @@ router.post("/", (req, res) => {
                 message: "성공",
               };
               const newresponse = { ...response1, ...response2 };
-              console.log(newresponse);
               return res.status(200).send(newresponse);
             });
           }

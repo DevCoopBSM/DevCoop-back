@@ -11,7 +11,6 @@ router.post("/", (req, res) => {
   const sql = "select point, student_name from users WHERE code_number = ?";
   connection.query(sql, [code_number], (err, [result]) => {
     try {
-      console.log(result);
       return res.status(200).json({
         message: "find",
         point: result.point,

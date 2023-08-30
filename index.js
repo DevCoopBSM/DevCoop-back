@@ -4,6 +4,10 @@ const { connection, pool } = require("./utils/query");
 // const router = express.Router();
 const app = express();
 const cors = require("cors");
+
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(express.json());
 // const {verifyToken} = require('./utils/token')
 app.use(express.json());
 const port = 6002;
@@ -25,10 +29,6 @@ const chargeLogRouter = require("./routes/user/chargelog");
 const payLogRouter = require("./routes/user/paylog");
 const allUserRouter = require("./routes/user/alluser");
 const allChargeRouter = require("./routes/user/allcharge");
-
-app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-app.use(express.json());
 
 connection.connect((err) => {
   try {
@@ -69,6 +69,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.listen(port, (req, res) => {
+app.listen(port, () => {
   console.log(`WEB Server is running on port ${port}`);
 });

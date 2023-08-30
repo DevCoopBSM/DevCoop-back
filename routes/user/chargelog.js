@@ -15,7 +15,6 @@ router.get("/", (req, res) => {
     if (err) throw err;
     console.log("check");
     if (result && result.length > 0) {
-      console.log(result);
       return res.status(200).send(result);
     } else {
       return res.status(500).json({

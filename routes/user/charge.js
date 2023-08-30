@@ -8,7 +8,6 @@ router.use((req, res, next) => checkAdminTokens(req, res, next));
 router.post("/", (req, res) => {
   console.log(req.body);
   const { charger, plusPoint, code_number } = req.body;
-  console.log(charger, plusPoint, code_number);
   const sql1 =
     "select student_number, point, student_name from users where code_number = ?"; //5000
   const sql2 =
@@ -48,7 +47,6 @@ router.post("/", (req, res) => {
               message: "성공",
             };
             const newresponse = { ...response1, ...response2 };
-            console.log(newresponse);
             res.status(200).send(newresponse);
           });
         });
