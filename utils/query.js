@@ -13,7 +13,7 @@ connection.connect(() => {
   });
 
   // 콜백 형식 쿼리 실행 기능
-function executeQuery(query, values = [], callback) {
+const executeQuery = (query, values = [], callback) => {
   pool.getConnection((err, connection) => {
     if (err) {
       console.error('Error connecting to the database:', err);
@@ -35,7 +35,7 @@ function executeQuery(query, values = [], callback) {
   
 
   // 주기적으로 핑을 보내는 타이머 설정 (예: 1분마다)
-function sendPing() {
+const sendPing = () => {
 connection.query('SELECT 1', (err, results) => {
     if (err) {
         console.error('Error pinging MySQL:', err);
