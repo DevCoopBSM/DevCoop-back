@@ -6,7 +6,7 @@ const pool = mysql.createPool(dbconfig);
 
 connection.connect(() => {
     try {
-      console.log("Mysql connect...");
+      console.log("Mysql connect succeed");
     } catch (err) {
       throw err;
     }
