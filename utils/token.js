@@ -21,19 +21,15 @@ const verifyToken = (token) => {
 }
 
 
-const genToken = async (email, name, expiretime) => {
+const genToken = (email, name, expiretime) => {
     console.log("genToken!")
     const Payload = {
         email: email,
         name: name
     }
-
     const token = jwt.sign(Payload, process.env.SECRET_KEY, { expiresIn: expiretime });
-
     //const verifiedToken = jwt.verify(token, process.env.SECRET_KEY);
     //console.log(verifiedToken);
-
-
     return token
 };
 
