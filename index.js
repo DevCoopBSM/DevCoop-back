@@ -30,6 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
 
+// SQL 부분 작성 시작
 connection.connect((err) => {
   try {
     console.log("Mysql connect...");
@@ -37,6 +38,32 @@ connection.connect((err) => {
     throw err;
   }
 });
+
+// 주기적으로 핑을 보내는 타이머 설정 (예: 1분마다)
+const pingInterval = 60*60*1000; // 1시간 마다
+setInterval(() => {
+  connection.query('SELECT 1', (err, results) => {
+    if (err) {
+      console.error('Error pinging MySQL:', err);
+    } else {
+      console.log('MySQL ping successful');
+    }
+  });
+}, pingInterval);
+
+// 프로그램 종료시 연결 닫기
+process.on('SIGINT', () => {
+  console.log('Closing MySQL connection...');
+  connection.end((err) => {
+    if (err) {
+      console.error('Error closing MySQL connection:', err);
+    } else {
+      console.log('MySQL connection closed');
+    }
+    process.exit();
+  });
+});
+
 
 app.use("/api/signup", signupRouter);
 app.use("/api/login", loginRouter);
