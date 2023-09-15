@@ -23,8 +23,8 @@ router.use((req, res, next) => checkAdminTokens(req, res, next));
 
 router.post("/", async (req, res) => {
   console.log(req.body);
-  const { charger, plusPoint, code_number } = req.body;
-  console.log(charger, plusPoint, code_number);
+  const { charger, changePoint, code_number } = req.body;
+  console.log(charger, changePoint, code_number);
   const sql1 =
     "SELECT student_number, point, student_name FROM users WHERE code_number = ?";
   const sql2 =
@@ -39,19 +39,19 @@ router.post("/", async (req, res) => {
     const response1 = {
       학번: value1.student_number,
       "원래 금액": nowPoint,
-      "충전 금액": plusPoint,
+      "충전 금액": changePoint,
       "학생 이름": value1.student_name,
     };
 
     await executeQuery_promise(sql2, [
       code_number,
-      plusPoint,
+      changePoint,
       nowPoint,
       charger,
       value1.student_name,
     ]);
 
-    await executeQuery_promise(sql3, [plusPoint, code_number]);
+    await executeQuery_promise(sql3, [changePoint, code_number]);
 
     const result4 = await executeQuery_promise(sql4, [code_number]);
     const value2 = result4[0];

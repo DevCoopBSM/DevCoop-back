@@ -2,7 +2,7 @@ const mysql = require('mysql2');
 const dbconfig = require('../config/db');
 const connection = mysql.createConnection(dbconfig);
 const pool = mysql.createPool(dbconfig);
-
+const util = require('util');
 
 connection.connect(() => {
     try {
@@ -32,7 +32,13 @@ const executeQuery = (query, values = [], callback) => {
     });
   });
 }
+
+// promise 버전
+const executeQuery_promise = util.promisify(executeQuery);
   
+
+
+
 
   // 주기적으로 핑을 보내는 타이머 설정 (예: 1분마다)
 const sendPing = () => {
@@ -66,5 +72,6 @@ module.exports = {
     connection,
     pool,
     sendPing,
-    executeQuery
+    executeQuery,
+    executeQuery_promise
 }

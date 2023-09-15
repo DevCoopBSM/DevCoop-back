@@ -19,7 +19,7 @@ router.post("/", (req, res) => {
       console.log(err);
       return res.status(500).send("Internal Server Error");
     }
-    console.log(result);
+    //console.log(result);
     return res.status(200).send(result);
   });
 });
