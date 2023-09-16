@@ -7,8 +7,8 @@ router.get("/", (req, res) => {
   const { id } = req.query;
   console.log("get success");
   const sql = `select inner_point, users.point, users.point+inner_point as total, users.student_name 
-    from user_log, users  
-    where user_log.code_number = ? and users.code_number = user_log.code_number and user_log.type = 1 
+    from charge_log, users  
+    where charge_log.code_number = ? and users.code_number = charge_log.code_number and charge_log.type = 1 
     order by date desc limit 1;`;
   connection.query(sql, id, (err, result) => {
     if (err) throw err;

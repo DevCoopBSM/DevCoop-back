@@ -8,8 +8,8 @@ router.get("/", (req, res) => {
   //if(type == 0){
   console.log("get success");
   const sql = `select inner_point, users.point, users.point-inner_point as total, users.student_name 
-    from user_log, users  
-    where user_log.code_number = ? and users.code_number = user_log.code_number and user_log.type = 0
+    from pay_log, users  
+    where pay_log.code_number = ? and users.code_number = pay_log.code_number and pay_log.type = 0
     order by date desc limit 1`;
   console.log("check");
 

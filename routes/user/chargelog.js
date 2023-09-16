@@ -7,7 +7,7 @@ router.get("/", (req, res) => {
   const { id } = req.query;
   console.log("get success");
   const sql = `SELECT date, point, inner_point, point + inner_point as total
-  FROM user_log
+  FROM charge_log
   WHERE code_number = ? AND type = 1
   ORDER BY date DESC
   LIMIT 10`;

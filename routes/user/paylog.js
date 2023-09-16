@@ -7,7 +7,7 @@ router.get("/", (req, res) => {
   const { id } = req.query;
   console.log("get success");
   const sql = `SELECT date, CAST(point AS SIGNED) AS point, inner_point, CAST(point - inner_point AS SIGNED) AS total
-  FROM user_log
+  FROM pay_log
   WHERE code_number = ? AND type = 0
   ORDER BY date DESC
   LIMIT 10;`;

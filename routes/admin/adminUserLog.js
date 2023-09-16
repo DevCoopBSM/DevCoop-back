@@ -12,8 +12,8 @@ router.post("/", (req, res) => {
     return res.status(400).send("Bad Request: Missing clientbarcode");
   }
 
-  // const sql = "SELECT users.student_number, users.student_name, users.point, user_log.inner_point, user_log.type FROM users INNER JOIN user_log ON users.code_number = user_log.code_number order by user_log.date desc limit 10";
-  const sql = `select date, inner_point, type from user_log where code_number = ${clientbarcode} order by date desc, type limit 10`;
+  // const sql = "SELECT users.student_number, users.student_name, users.point, pay_log.inner_point, pay_log.type FROM users INNER JOIN pay_log ON users.code_number = pay_log.code_number order by pay_log.date desc limit 10";
+  const sql = `select date, inner_point, type from pay_log where code_number = ${clientbarcode} order by date desc, type limit 10`;
   executeQuery(sql, (err, result) => {
     if (err) {
       console.log(err);

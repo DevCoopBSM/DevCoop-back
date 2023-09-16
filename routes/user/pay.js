@@ -11,7 +11,7 @@ router.post("/", (req, res) => {
   const sql1 =
     "select student_number, point, student_name from users where code_number = ?";
   const sql2 =
-    'INSERT INTO user_log VALUES(?, CURRENT_TIMESTAMP, 0, ?, ?, ?, "test", ?)';
+    'INSERT INTO pay_log VALUES(?, CURRENT_TIMESTAMP, 0, ?, ?, ?, "test", ?)';
   const sql3 =
     "update users set point = point - ? where code_number = ? and point - ? >= 0";
 

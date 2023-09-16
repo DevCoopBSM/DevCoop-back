@@ -11,7 +11,7 @@ router.post("/", async (req, res) => {
   try {
     const placeholders = code_number.map(() => "?").join(", ");
     const sql1 = `SELECT student_number, point, student_name, code_number FROM users WHERE code_number IN (${placeholders})`;
-    const sql2 = "INSERT INTO user_log VALUES(?, CURRENT_TIMESTAMP, 1, ?, ?, ?, 'test', ?)";
+    const sql2 = "INSERT INTO charge_log VALUES(?, CURRENT_TIMESTAMP, 1, ?, ?, ?, 'test', ?)";
     const sql3 = "UPDATE users SET point = point + ? WHERE code_number = ?";
 
     const [select_barcode] = await executeQuery_promise(sql1, code_number);
