@@ -1,5 +1,5 @@
 const express = require("express");
-const { executeQuery_promise } = require("../../utils/query");
+const { executeQueryPromise } = require("../../utils/query");
 const { checkAdminTokens } = require("../../middlewares/users");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -33,7 +33,7 @@ router.post("/", async (req, res) => {
   const sql4 = "SELECT point FROM users WHERE code_number = ?";
 
   try {
-    const result1 = await executeQuery_promise(sql1, [code_number]);
+    const result1 = await executeQueryPromise(sql1, [code_number]);
     const value1 = result1[0];
     const nowPoint = value1.point;
     const response1 = {
@@ -43,7 +43,7 @@ router.post("/", async (req, res) => {
       "학생 이름": value1.student_name,
     };
 
-    await executeQuery_promise(sql2, [
+    await executeQueryPromise(sql2, [
       code_number,
       plusPoint,
       nowPoint,
@@ -51,9 +51,9 @@ router.post("/", async (req, res) => {
       value1.student_name,
     ]);
 
-    await executeQuery_promise(sql3, [plusPoint, code_number]);
+    await executeQueryPromise(sql3, [plusPoint, code_number]);
 
-    const result4 = await executeQuery_promise(sql4, [code_number]);
+    const result4 = await executeQueryPromise(sql4, [code_number]);
     const value2 = result4[0];
     const response2 = {
       "최종 잔액": value2.point,

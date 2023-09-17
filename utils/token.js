@@ -35,9 +35,18 @@ const genToken = (email, name, expiretime) => {
 
 const updateRefToken = async (email, token) => {
     const query = `UPDATE users SET ref_token = ?  WHERE email = ?`;
-    executeQuery(query, [token, email]);
-    console.log(`update refreshtoken`);
-}
+    executeQuery(query, [token, email], (err, result) => {
+        if (err) throw err;
+        console.log("update refreshtoken");
+        if (result && result.length > 0) {
+          console.log(result);
+          return result;
+        } else {
+            console.log("refresh update error");
+        };
+    });
+};
+
 // 
 function base64(json) {
     const stringified = JSON.stringify(json);

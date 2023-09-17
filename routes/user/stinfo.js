@@ -8,7 +8,7 @@ const { checkTokens } = require("../../middlewares/users");
 router.use((req, res, next) => checkTokens(req, res, next));
 
 router.get("/", async (req, res) => {
-  // console.log("hello");
+  console.log("stinfo start");
   const verifyedToken = verifyToken(req.header("access"));
   console.log(verifyedToken);
   if (verifyedToken == null) {
@@ -18,10 +18,10 @@ router.get("/", async (req, res) => {
 
   const email = verifyedToken.email;
   console.log(email);
-  const sql = `select student_number, student_name, code_number, point from users WHERE email = '${email}' `;
-  executeQuery(sql, (err, result) => {
+  const sql = 'select student_number, student_name, code_number, point from users WHERE email = ? ';
+  executeQuery(sql, [email], (err, result) => {
     try {
-      const user = result[0];
+      const user = result[0]; // [0] 없애면 안됨!
       return res.status(200).json({
         message: "학생정보 조회에 성공했습니다",
         number: user.student_number,

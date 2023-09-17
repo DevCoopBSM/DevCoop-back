@@ -14,7 +14,7 @@ router.get("/", (req, res) => {
     if (err) throw err;
     console.log("check");
     if (result && result.length > 0) {
-      const value1 = result[Object.keys(result)[0]];
+      const value1 = result[Object.keys(result)];
       const new_inner_point = value1.inner_point;
       const new_point = value1.point;
       const new_total = value1.total;

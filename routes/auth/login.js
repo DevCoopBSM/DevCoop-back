@@ -21,7 +21,7 @@ async function handleLogin(req, res) {
       if (results.length === 0) {
         return res.status(401).json({ error: "이메일이 잘못되었습니다" });
       }
-
+      console.log(results)
       const user = results[0];
       const isPasswordValid = await bcrypt.compare(password, user.password);
 

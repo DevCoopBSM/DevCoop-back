@@ -1,5 +1,5 @@
 const express = require("express");
-const { executeQuery_promise } = require("../../utils/query");
+const { executeQueryPromise } = require("../../utils/query");
 const { checkAdminTokens } = require("../../middlewares/users");
 const router = express.Router();
 
@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
     const sql2 = "INSERT INTO charge_log VALUES(?, CURRENT_TIMESTAMP, 1, ?, ?, ?, 'test', ?)";
     const sql3 = "UPDATE users SET point = point + ? WHERE code_number = ?";
 
-    const [select_barcode] = await executeQuery_promise(sql1, code_number);
+    const [select_barcode] = await executeQueryPromise(sql1, code_number);
 
     if (select_barcode.length === 0) {
       return res.status(401).json({ error: "해당 결과 없음" });
@@ -22,8 +22,8 @@ router.post("/", async (req, res) => {
 
     for (const data of select_barcode) {
       const { code_number: barcode, point, student_name: studentName } = data;
-      await executeQuery_promise(sql2, [barcode, plusPoint, point, charger, studentName]);
-      await executeQuery_promise(sql3, [plusPoint, barcode]);
+      await executeQueryPromise(sql2, [barcode, plusPoint, point, charger, studentName]);
+      await executeQueryPromise(sql3, [plusPoint, barcode]);
       console.log(`Inserted data for barcode ${barcode}`);
     }
 

@@ -1,12 +1,12 @@
 const { verifyToken, genToken, getPayload } = require("../utils/token");
 const mysql = require('mysql2');
 const dbconfig = require('../config/db');
-const { executeQuery_promise } = require("../utils/query")
+const { executeQueryPromise } = require("../utils/query")
 
 
 const updateToken = async (tokentype, email, token) => {
     const query = `UPDATE users SET ${tokentype} = ?  WHERE email = ?`;
-    const [results] = await executeQuery_promise(query, [token, email]);
+    const [results] = await executeQueryPromise(query, [token, email]);
     // console.log(results);
 };
 
@@ -25,7 +25,7 @@ async function checkTokens(req, res, next) {
         } else { // case2: access token은 만료됐지만, refresh token은 유효한 경우
             // Refreash 토큰 DB로 검증 
             const query = 'SELECT * FROM users WHERE ref_token = ?';
-            const [results] = await executeQuery_promise(query, req.header('refresh'));
+            const [results] = await executeQueryPromise(query, req.header('refresh'));
             // console.log(results)
             if (results.length === 0) {
                 return res.status(401).json({ error: 'Wrong refresh Token' });
@@ -59,7 +59,7 @@ async function checkAdminTokens(req, res, next) {
     const refreshToken = verifyToken(req.header('refresh'));
     const accessToken = verifyToken(req.header('access'));
     const query = 'SELECT * FROM users WHERE ref_token = ?';
-    const [results] = await executeQuery_promise(query, req.header('refresh'));
+    const [results] = await executeQueryPromise(query, req.header('refresh'));
     if (results.length === 0) {
         return res.status(401).json({ error: 'Wrong refresh Token' });
     }
