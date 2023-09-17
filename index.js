@@ -1,10 +1,10 @@
 const express = require("express");
-// const passport = require('passport');
 // const router = express.Router();
 const app = express();
 const cors = require("cors");
-// const {verifyToken} = require('./utils/token')
 app.use(express.json());
+
+
 const port = 6002;
 const signupRouter = require("./routes/auth/signup");
 const loginRouter = require("./routes/auth/login");
@@ -21,6 +21,7 @@ const payCompleteRouter = require("./routes/user/paycomplete");
 
 const adminUserLogRouter = require("./routes/admin/adminUserLog");
 const adminChargeUserLogRouter = require("./routes/admin/adminChargeUserLog");
+const adminPayUserLogRouter = require("./routes/admin/adminPayUserLog");
 
 const chargeUserLogRouter = require("./routes/user/chargeuserlog");
 const chargeLogRouter = require("./routes/user/chargelog");
@@ -54,6 +55,7 @@ app.use("/api/paycomplete", payCompleteRouter);
 
 app.use("/api/adminuserlog", adminUserLogRouter);  
 app.use("/api/adminchargeuserlog", adminChargeUserLogRouter);
+app.use("/api/adminpayuserlog", adminPayUserLogRouter);  
 
 app.use("/api/chargeuserlog", chargeUserLogRouter);
 app.use("/api/chargelog", chargeLogRouter);

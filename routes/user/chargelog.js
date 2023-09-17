@@ -5,7 +5,7 @@ router.use(express.json());
 
 router.get("/", (req, res) => {
   const { id } = req.query;
-  console.log("get success");
+  console.log("get chargelog success");
   const sql = `SELECT date, point, inner_point, point + inner_point as total
   FROM charge_log
   WHERE code_number = ? AND type = 1
@@ -13,9 +13,7 @@ router.get("/", (req, res) => {
   LIMIT 10`;
   executeQuery(sql, id, (err, result) => {
     if (err) throw err;
-    console.log("check");
     if (result && result.length > 0) {
-      console.log(result);
       return res.status(200).send(result);
     } else {
       return res.status(500).json({

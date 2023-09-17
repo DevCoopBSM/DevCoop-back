@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
   }
 
   // const sql = "SELECT users.student_number, users.student_name, users.point, charge_log.inner_point, charge_log.type FROM users INNER JOIN charge_log ON users.code_number = charge_log.code_number order by charge_log.date desc limit 10";
-  const sql = `select date, inner_point, type from charge_log where student_name = ? and type = 1 order by date desc limit 10`;
+  const sql = `select date, inner_point, type from user_log where student_name = ? and type = 1 order by date desc limit 10`;
   executeQuery(sql, clientname, (err, result) => {
     if (err) {
       console.log(err);
