@@ -1,5 +1,5 @@
 const express = require("express");
-const { connection } = require("../../utils/query");
+const { executeQuery } = require("../../utils/query");
 const router = express.Router();
 router.use(express.json());
 const { checkTokens } = require("../../middlewares/users");
@@ -9,7 +9,7 @@ router.post("/", (req, res) => {
   console.log(req.body);
   const { code_number } = req.body;
   const sql = "select point, student_name from users WHERE code_number = ?";
-  connection.query(sql, [code_number], (err, [result]) => {
+  executeQuery(sql, [code_number], (err, [result]) => {
     try {
       console.log(result);
       return res.status(200).json({

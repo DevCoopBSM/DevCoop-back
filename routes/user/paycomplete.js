@@ -1,5 +1,5 @@
 const express = require("express");
-const { connection } = require("../../utils/query");
+const { executeQuery } = require("../../utils/query");
 const router = express.Router();
 router.use(express.json());
 
@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
     order by date desc limit 1`;
   console.log("check");
 
-  connection.query(sql, id, (err, result) => {
+  executeQuery(sql, id, (err, result) => {
     if (err) throw err;
     console.log("show");
 

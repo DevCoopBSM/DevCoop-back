@@ -2,7 +2,6 @@ const { verifyToken, genToken, getPayload } = require("../utils/token");
 const mysql = require('mysql2');
 const dbconfig = require('../config/db');
 const { executeQuery_promise } = require("../utils/query")
-// const connection = mysql.createConnection(dbconfig);
 
 
 const updateToken = async (tokentype, email, token) => {

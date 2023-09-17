@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 dotenv.config();
-const {connection} = require('../utils/query')
-const crypto = require("crypto")
+const {executeQuery} = require('../utils/query')
+const crypto = require("crypto");
 
 
 const verifyToken = (token) => {
@@ -22,7 +22,7 @@ const verifyToken = (token) => {
 
 
 const genToken = (email, name, expiretime) => {
-    console.log("genToken!")
+    console.log("genToken!");
     const Payload = {
         email: email,
         name: name
@@ -30,36 +30,31 @@ const genToken = (email, name, expiretime) => {
     const token = jwt.sign(Payload, process.env.SECRET_KEY, { expiresIn: expiretime });
     //const verifiedToken = jwt.verify(token, process.env.SECRET_KEY);
     //console.log(verifiedToken);
-    return token
+    return token;
 };
-
-
-
 
 const updateRefToken = async (email, token) => {
     const query = `UPDATE users SET ref_token = ?  WHERE email = ?`;
-    connection.query(query, [token, email]);
-    console.log(`update refreshtoken`)
+    executeQuery(query, [token, email]);
+    console.log(`update refreshtoken`);
 }
 // 
 function base64(json) {
-    const stringified = JSON.stringify(json)
+    const stringified = JSON.stringify(json);
     // JSON을 문자열화
-    const base64Encoded = Buffer.from(stringified).toString("base64")
+    const base64Encoded = Buffer.from(stringified).toString("base64");
     // 문자열화 된 JSON 을 Base64 로 인코딩
-    const paddingRemoved = base64Encoded.replaceAll("=", "")
+    const paddingRemoved = base64Encoded.replaceAll("=", "");
     // Base 64 의 Padding(= or ==) 을 제거
   
-    return paddingRemoved
+    return paddingRemoved;
   }
 
 // 아래 코드는 토큰에서 payload부분 해독하여 이메일 등을 추출하려고 달아둠
-  const getPayload = (token) => {
-    const Payload = token.split('.')[1];
+const getPayload = (token) => {
+    const payload = token.split('.')[1];
     return (Buffer.from(payload, 'base64').toString('utf8'));
-  }
-  
-
+};
 
 exports.genToken = genToken;
 exports.verifyToken = verifyToken;

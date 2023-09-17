@@ -1,7 +1,7 @@
 const express = require("express"); // NodeJS 웹 프레임워크
 const bcrypt = require("bcrypt");
 const router = express.Router();
-const { connection } = require("../../utils/query");
+const { executeQuery_promise } = require("../../utils/query");
 const { genToken, updateRefToken } = require("../../utils/token");
 router.use(express.json());
 
@@ -11,8 +11,7 @@ router.post("/", async (req, res) => {
 
   try {
     const query = "SELECT * FROM users WHERE email = ?";
-    // console.log(connection)
-    const [results] = await connection.promise().query(query, email);
+    const [results] = await executeQuery_promise(query, email);
     console.log(results);
     if (results.length === 0) {
       return res.status(401).json({ error: "이메일이 잘못되었습니다" });

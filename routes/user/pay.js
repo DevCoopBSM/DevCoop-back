@@ -1,5 +1,5 @@
 const express = require("express");
-const { connection } = require("../../utils/query");
+const { executeQuery } = require("../../utils/query");
 const { checkAdminTokens } = require("../../middlewares/users");
 const router = express.Router();
 router.use(express.json());
@@ -16,7 +16,7 @@ router.post("/", (req, res) => {
     "update users set point = point - ? where code_number = ? and point - ? >= 0";
 
   const sql4 = "select point from users where code_number = ?";
-  connection.query(sql1, [code_number], (err, result1) => {
+  executeQuery(sql1, [code_number], (err, result1) => {
     if (err) {
       throw err;
     }
@@ -31,7 +31,7 @@ router.post("/", (req, res) => {
     if (value.point - minusPoint < 0) {
       return res.status(400).json({ message: "잘못된 요청입니다. 잔액초과" });
     }
-    connection.query(
+    executeQuery(
       sql2,
       [code_number, minusPoint, value.point, charger, value.student_name],
       (err, result2) => {
@@ -39,14 +39,14 @@ router.post("/", (req, res) => {
         if (err) {
           throw err;
         }
-        connection.query(
+        executeQuery(
           sql3,
           [minusPoint, code_number, minusPoint],
           (err, result3) => {
             if (err) {
               throw err;
             }
-            connection.query(sql4, [code_number], (err, result4) => {
+            executeQuery(sql4, [code_number], (err, result4) => {
               if (err) {
                 throw err;
               }

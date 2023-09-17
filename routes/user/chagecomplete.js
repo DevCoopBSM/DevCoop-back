@@ -1,5 +1,5 @@
 const express = require("express");
-const { connection } = require("../../utils/query");
+const { executeQuery } = require("../../utils/query");
 const router = express.Router();
 router.use(express.json());
 
@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
     from charge_log, users  
     where charge_log.code_number = ? and users.code_number = charge_log.code_number and charge_log.type = 1 
     order by date desc limit 1;`;
-  connection.query(sql, id, (err, result) => {
+  executeQuery(sql, id, (err, result) => {
     if (err) throw err;
     console.log("check");
     if (result && result.length > 0) {
@@ -27,7 +27,7 @@ router.get("/", (req, res) => {
         point: new_point,
         total: new_total,
         name: new_name,
-      });
+    });
     } else {
       return res.status(500).json({
         message: "내부 서버 에러가 발생하였습니다",

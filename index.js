@@ -1,6 +1,5 @@
 const express = require("express");
 // const passport = require('passport');
-const { connection, pool, sendPing } = require("./utils/query");
 // const router = express.Router();
 const app = express();
 const cors = require("cors");

@@ -1,5 +1,5 @@
 const express = require("express");
-const { connection } = require("../../utils/query");
+const { executeQuery } = require("../../utils/query");
 const router = express.Router();
 router.use(express.json());
 
@@ -14,7 +14,7 @@ router.post("/", (req, res) => {
 
   // const sql = "SELECT users.student_number, users.student_name, users.point, pay_log.inner_point, pay_log.type FROM users INNER JOIN pay_log ON users.code_number = pay_log.code_number order by pay_log.date desc limit 10";
   const sql = `select date, inner_point, type from pay_log where code_number = ${clientbarcode} and type = 0 order by date desc limit 10`;
-  connection.query(sql, (err, result) => {
+  executeQuery(sql, (err, result) => {
     if (err) {
       console.log(err);
       return res.status(500).send("Internal Server Error");

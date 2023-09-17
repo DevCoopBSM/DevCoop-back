@@ -1,17 +1,15 @@
 const express = require("express"); // NodeJS 웹 프레임워크
 const app = express();
 const mysql = require("mysql2");
-const dbconfig = require("../../config/db");
 const bcrypt = require("bcrypt");
 const router = express.Router();
-
-const connection = mysql.createConnection(dbconfig);
+const { executeQuery_promise } = require("../../utils/query");
 
 router.post("/", async (req, res) => {
   const { student_name, email, password } = req.body;
   try {
     const query = "SELECT email FROM users WHERE email = ?";
-    const [results] = await connection.promise().query(query, email);
+    const [results] = await executeQuery_promise(query, email);
 
     if (results.length > 0) {
       return res.status(400).json({
@@ -32,7 +30,7 @@ router.post("/", async (req, res) => {
 
     const insert_query =
       "INSERT INTO users(student_name, email, password) VALUES (?, ?, ?)";
-    connection.query(insert_query, register_values);
+    executeQuery_promise(insert_query, register_values);
 
     return res
       .status(200)

@@ -1,10 +1,10 @@
 const express = require('express');// NodeJS 웹 프레임워크
 const mysql = require('mysql2');
-const dbconfig = require('../../config/db');
+const { executeQuery_promise } = require("../../utils/query");
 const bcrypt = require('bcrypt');
 const router = express.Router();
-// const genToken = require('../utiles/jwt')
-const connection = mysql.createConnection(dbconfig);
+
+
 const token = require('../../utils/token.js');
 router.use(express.json());
 
@@ -14,7 +14,7 @@ router.post('/', async (req, res) => {
 
     try {
         const query = 'SELECT * FROM users WHERE email = ?';
-        const [results] = await connection.promise().query(query, email);
+        const [results] = await executeQuery_promise(query, email);
         console.log(results);
         if (results.length === 0) {
             return res.status(401).json({ error: '이메일이 잘못되었습니다' });

@@ -1,5 +1,5 @@
 const express = require("express");
-const { connection } = require("../../utils/query");
+const { executeQuery } = require("../../utils/query");
 const router = express.Router();
 router.use(express.json());
 
@@ -11,7 +11,7 @@ router.get("/", (req, res) => {
   WHERE code_number = ? AND type = 1
   ORDER BY date DESC
   LIMIT 10`;
-  connection.query(sql, id, (err, result) => {
+  executeQuery(sql, id, (err, result) => {
     if (err) throw err;
     console.log("check");
     if (result && result.length > 0) {

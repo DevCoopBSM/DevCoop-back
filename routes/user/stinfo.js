@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { verifyToken } = require("../../utils/token");
-const { connection } = require("../../utils/query");
+const { executeQuery } = require("../../utils/query");
 
 router.use(express.json());
 const { checkTokens } = require("../../middlewares/users");
@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
   const email = verifyedToken.email;
   console.log(email);
   const sql = `select student_number, student_name, code_number, point from users WHERE email = '${email}' `;
-  connection.query(sql, (err, result) => {
+  executeQuery(sql, (err, result) => {
     try {
       const user = result[0];
       return res.status(200).json({
