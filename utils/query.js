@@ -1,16 +1,18 @@
 const mysql = require('mysql2');
 const dbconfig = require('../config/db');
-const connection = mysql.createConnection(dbconfig);
+// const connection = mysql.createConnection(dbconfig);
 const pool = mysql.createPool(dbconfig);
 const util = require('util');
 
-connection.connect(() => {
-    try {
-      console.log("Mysql connect succeed");
-    } catch (err) {
-      throw err;
-    }
-  });
+
+
+// connection.connect(() => {
+//     try {
+//       console.log("Mysql connect succeed");
+//     } catch (err) {
+//       throw err;
+//     }
+//   });
 
   // 콜백 형식 쿼리 실행 기능
 const executeQuery = (query, values = [], callback) => {
@@ -42,7 +44,7 @@ const executeQuery_promise = util.promisify(executeQuery);
 
   // 주기적으로 핑을 보내는 타이머 설정 (예: 1분마다)
 const sendPing = () => {
-connection.query('SELECT 1', (err, results) => {
+  executeQuery('SELECT 1', (err, results) => {
     if (err) {
         console.error('Error pinging MySQL:', err);
     } else {
@@ -69,7 +71,6 @@ process.on('SIGINT', () => {
   
 
 module.exports = {
-    connection,
     pool,
     sendPing,
     executeQuery,
