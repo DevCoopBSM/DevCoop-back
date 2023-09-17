@@ -16,7 +16,7 @@ const util = require('util');
 
   // 콜백 형식 쿼리 실행 기능
 const executeQuery = (query, values = [], callback) => {
-  // console.log(query)
+  console.log(query)
   // console.log(values)
   pool.getConnection((err, connection) => {
     if (err) {

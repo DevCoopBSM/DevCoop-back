@@ -1,69 +1,51 @@
 const express = require("express");
-const { executeQuery } = require("../../utils/query");
+const { executeQueryPromise } = require("../../utils/query");
 const { checkAdminTokens } = require("../../middlewares/users");
 const router = express.Router();
+
 router.use(express.json());
-router.use((req, res, next) => checkAdminTokens(req, res, next));
+router.use(checkAdminTokens);
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   const { code_number, minusPoint, charger } = req.body;
-  console.log(code_number, minusPoint, charger);
-  const sql1 =
-    "select student_number, point, student_name from users where code_number = ?";
-  const sql2 =
-    'INSERT INTO pay_log VALUES(?, CURRENT_TIMESTAMP, 0, ?, ?, ?, "test", ?)';
-  const sql3 =
-    "update users set point = point - ? where code_number = ? and point - ? >= 0";
 
-  const sql4 = "select point from users where code_number = ?";
-  executeQuery(sql1, [code_number], (err, result1) => {
-    if (err) {
-      throw err;
-    }
-    console.log("success");
-    const value = result1[Object.keys(result1)[0]];
-    const response1 = {
+  const selectUserQuery = "SELECT student_number, point, student_name FROM users WHERE code_number = ?";
+  const insertPayLogQuery = 'INSERT INTO pay_log(code_number, date, type, inner_point, point, charger, verify_key ,student_name) VALUES(?, CURRENT_TIMESTAMP, 0, ?, ?, ?, "test", ?)';
+  const updateUserPointQuery = "UPDATE users SET point = point - ? WHERE code_number = ? and point - ? >= 0";
+  const selectUserPointQuery = "SELECT point FROM users WHERE code_number = ?";
+
+  try {
+    const userResult = await executeQueryPromise(selectUserQuery, [code_number]);
+    const value = userResult[0];
+    const initialResponse = {
       학번: value.student_number,
       "이전 잔액": value.point,
       "결제된 금액": minusPoint,
       "학생 이름": value.student_name,
     };
+    
     if (value.point - minusPoint < 0) {
       return res.status(400).json({ message: "잘못된 요청입니다. 잔액초과" });
     }
-    executeQuery(
-      sql2,
-      [code_number, minusPoint, value.point, charger, value.student_name],
-      (err, result2) => {
-        console.log("success");
-        if (err) {
-          throw err;
-        }
-        executeQuery(
-          sql3,
-          [minusPoint, code_number, minusPoint],
-          (err, result3) => {
-            if (err) {
-              throw err;
-            }
-            executeQuery(sql4, [code_number], (err, result4) => {
-              if (err) {
-                throw err;
-              }
-              const value2 = result4[Object.keys(result4)[0]];
-              const response2 = {
-                "현재 잔액": value2.point,
-                message: "성공",
-              };
-              const newresponse = { ...response1, ...response2 };
-              console.log(newresponse);
-              return res.status(200).send(newresponse);
-            });
-          }
-        );
-      }
-    );
-  });
+
+    await executeQueryPromise(insertPayLogQuery, [code_number, minusPoint, value.point, charger, value.student_name]);
+    await executeQueryPromise(updateUserPointQuery, [minusPoint, code_number, minusPoint]);
+    
+    const pointResult = await executeQueryPromise(selectUserPointQuery, [code_number]);
+    const updatedValue = pointResult[0];
+    const finalResponse = {
+      "현재 잔액": updatedValue.point,
+      message: "성공",
+    };
+
+    const response = { ...initialResponse, ...finalResponse };
+    console.log(response);
+    return res.status(200).send(response);
+    
+  } catch (err) {
+    console.error('Error:', err);
+    return res.status(500).json({ error: "Internal server error." });
+  }
 });
 
 module.exports = router;
