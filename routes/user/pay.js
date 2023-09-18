@@ -18,10 +18,10 @@ router.post("/", async (req, res) => {
     const userResult = await executeQueryPromise(selectUserQuery, [code_number]);
     const value = userResult[0];
     const initialResponse = {
-      학번: value.student_number,
-      "이전 잔액": value.point,
-      "결제된 금액": minusPoint,
-      "학생 이름": value.student_name,
+      student_number: value.student_number,
+      oldPoint : value.point,
+      minusPoint: minusPoint,
+      student_name: value.student_name,
     };
     
     if (value.point - minusPoint < 0) {
@@ -34,8 +34,8 @@ router.post("/", async (req, res) => {
     const pointResult = await executeQueryPromise(selectUserPointQuery, [code_number]);
     const updatedValue = pointResult[0];
     const finalResponse = {
-      "현재 잔액": updatedValue.point,
-      message: "성공",
+      newPoint: updatedValue.point,
+      message: "success",
     };
 
     const response = { ...initialResponse, ...finalResponse };

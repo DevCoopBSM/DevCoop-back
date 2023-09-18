@@ -14,7 +14,6 @@ const fetchUserDetailsByCodeNumber = "SELECT student_number, point, student_name
 const insertIntoChargeLog = 'INSERT INTO charge_log(code_number, date, type, inner_point, point, charger, verify_key ,student_name) VALUES(?, CURRENT_TIMESTAMP, 1, ?, ?, ?, "test", ?)';
 const updateUserPoints = "UPDATE users SET point = point + ? WHERE code_number = ?";
 const fetchUpdatedUserPoint = "SELECT point FROM users WHERE code_number = ?";
-
 router.post("/", async (req, res) => {
   const { charger, plusPoint, code_number } = req.body;
 
@@ -35,15 +34,15 @@ router.post("/", async (req, res) => {
     const updatedPoint = await executeQueryPromise(fetchUpdatedUserPoint, [code_number]);
 
     const response = {
-      학번: student_number,
-      "원래 금액": nowPoint,
-      "충전 금액": plusPoint,
-      "학생 이름": student_name,
-      "최종 잔액": updatedPoint[0].point,
-      message: "성공"
+      student_number: student_number,
+      oldPoint: nowPoint,
+      plusPoint: plusPoint,
+      student_name: student_name,
+      newPoint: updatedPoint[0].point,
+      message: "success"
     };
 
-    res.status(200).send(response);
+    res.status(200).json(response);
   } catch (err) {
     console.error('Error:', err);
     return res.status(500).json({ error: "내부 서버 오류가 발생하였습니다" });

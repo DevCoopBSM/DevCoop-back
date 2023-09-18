@@ -26,6 +26,7 @@ const adminPayUserLogRouter = require("./routes/admin/adminPayUserLog");
 const chargeUserLogRouter = require("./routes/user/chargeuserlog");
 const chargeLogRouter = require("./routes/user/chargelog");
 const payLogRouter = require("./routes/user/paylog");
+const payUserLogRouter = require("./routes/user/payuserlog");
 
 const allUserRouter = require("./routes/user/alluser");
 const allChargeRouter = require("./routes/user/allcharge");
@@ -58,6 +59,7 @@ app.use("/api/adminchargeuserlog", adminChargeUserLogRouter);
 app.use("/api/adminpayuserlog", adminPayUserLogRouter);  
 
 app.use("/api/chargeuserlog", chargeUserLogRouter);
+app.use("/api/payuserlog", payUserLogRouter);
 app.use("/api/chargelog", chargeLogRouter);
 app.use("/api/paylog", payLogRouter);
 app.use("/api/alluser", allUserRouter);

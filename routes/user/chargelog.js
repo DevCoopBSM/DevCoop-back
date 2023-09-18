@@ -13,9 +13,12 @@ router.get("/", (req, res) => {
   LIMIT 10`;
   executeQuery(sql, id, (err, result) => {
     if (err) throw err;
+
     if (result && result.length > 0) {
       return res.status(200).send(result);
-    } else {
+    }
+    
+    else {
       return res.status(500).json({
         message: "내부 서버 에러가 발생하였습니다",
       });
