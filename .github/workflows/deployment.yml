@@ -1,0 +1,17 @@
+name: CI/CD Deployment
+
+on:
+  push:
+    branches:
+      - main # Or the branch name you wish to trigger the deployment
+
+jobs:
+  deploy:
+    runs-on: self-hosted # Assuming you're using a self-hosted runner
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Deploy backend and frontend
+      run: 
+        git pull
