@@ -16,7 +16,10 @@ const updateUserPoints = "UPDATE users SET point = point + ? WHERE code_number =
 const fetchUpdatedUserPoint = "SELECT point FROM users WHERE code_number = ?";
 router.post("/", async (req, res) => {
   const { charger, plusPoint, code_number } = req.body;
-
+  if(plusPoint <= 0 | !plusPoint){
+    console.log(plusPoint);
+    return res.status(400).json({error:"충전값이 0이하입니다."});
+  }
   try {
     const userDetails = await executeQueryPromise(fetchUserDetailsByCodeNumber, [code_number]);
     const { student_number, point: nowPoint, student_name } = userDetails[0];

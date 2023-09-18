@@ -1,104 +1,92 @@
 const { verifyToken, genToken, getPayload } = require("../utils/token");
-const mysql = require('mysql2');
-const dbconfig = require('../config/db');
-const { executeQueryPromise } = require("../utils/query")
-
+const { executeQueryPromise } = require("../utils/query");
 
 const updateToken = async (tokentype, email, token) => {
-    const query = `UPDATE users SET ${tokentype} = ?  WHERE email = ?`;
-    const [results] = await executeQueryPromise(query, [token, email]);
-    // console.log(results);
+    try {
+        const query = `UPDATE users SET ${tokentype} = ?  WHERE email = ?`;
+        const [results] = await executeQueryPromise(query, [token, email]);
+    } catch (error) {
+        console.error("Error updating token:", error);
+    }
 };
 
-
 async function checkTokens(req, res, next) {
-    const refreshToken = verifyToken(req.header('refresh'));
-    const accessToken = verifyToken(req.header('access'));
+    try {
+        const refreshToken = verifyToken(req.header('refresh'));
+        const accessToken = verifyToken(req.header('access'));
 
-    if (accessToken === null) {
-        if (refreshToken === null) { // case1: access token과 refresh token 모두가 만료된 경우
-            console.log("all token are expired")
-            return(res.status(403).send({
-                message : "Expired AllToken, Logout",
-                areTokensVaild: false
-        }));
-        } else { // case2: access token은 만료됐지만, refresh token은 유효한 경우
-            // Refreash 토큰 DB로 검증 
-            const query = 'SELECT * FROM users WHERE ref_token = ?';
-            const [results] = await executeQueryPromise(query, req.header('refresh'));
-            // console.log(results)
-            if (results.length === 0) {
-                return res.status(401).json({ error: 'Wrong refresh Token' });
+        if (accessToken === null) {
+            if (refreshToken === null) { 
+                return res.status(403).send({
+                    message : "Expired AllToken, Logout",
+                    areTokensVaild: false
+                });
+            } else { 
+                const query = 'SELECT * FROM users WHERE ref_token = ?';
+                const [results] = await executeQueryPromise(query, req.header('refresh'));
+                if (results.length === 0) {
+                    return res.status(401).json({ error: 'Wrong refresh Token' });
+                }
+                const newAccessToken = await genToken(refreshToken.email, refreshToken.student_name, "1h");
+                return res.status(403).send({
+                    message : "accToken is renewed",
+                    access : newAccessToken
+                });
             }
-            const newAccessToken = await genToken( refreshToken.email, refreshToken.student_name, "1h" )
-            console.log("accToken is renewed")
-            res.status(403).send({
-                message : "accToken is renewed",
-                access : newAccessToken
-            });
-            next();
-        }
-    } else {
-        if (refreshToken === null) { // case3: access token은 유효하지만, refresh token은 만료된 경우
-            const newRefreshToken = await genToken( accessToken.email, accessToken.student_name, "14d" );
-            updateToken("ref_token", accessToken.email, newRefreshToken);
-            console.log("refToken is renewed")
-            res.status(403).send({
+        } else if (refreshToken === null) { 
+            const newRefreshToken = await genToken(accessToken.email, accessToken.student_name, "14d");
+            await updateToken("ref_token", accessToken.email, newRefreshToken);
+            return res.status(403).send({
                 message : "refToken is renewed",
                 refresh : newRefreshToken
             });
-            next();
-        } else { // case4: accesss token과 refresh token 모두가 유효한 경우
-            console.log("Token are all right")
+        } else { 
             next();
         }
+    } catch (error) {
+        console.error("Error in checkTokens:", error);
+        res.status(500).send({ error: 'Internal Server Error' });
     }
 }
 
 async function checkAdminTokens(req, res, next) {
-    const refreshToken = verifyToken(req.header('refresh'));
-    const accessToken = verifyToken(req.header('access'));
-    const query = 'SELECT * FROM users WHERE ref_token = ?';
-    const [results] = await executeQueryPromise(query, req.header('refresh'));
-    if (results.length === 0) {
-        return res.status(401).json({ error: 'Wrong refresh Token' });
-    }
-    console.log(results)
-    if (results.is_coop == 0) {
-        return res.status(401).json({ error: 'Not Coop' });
-    }
-    if (accessToken === null) { 
-        if (refreshToken === null) { // case1: access token과 refresh token 모두가 만료된 경우
-            console.log("all token are expired")
-            return(res.status(403).send({
-                message : "Expired AllToken, Logout",
-                areTokensVaild: false
-        }));
-        } else { // case2: access token은 만료됐지만, refresh token은 유효한 경우
-            // Refreash 토큰 DB로 검증 
-            // console.log(results)
-            const newAccessToken = await genToken( refreshToken.email, refreshToken.student_name, "1h" )
-            console.log("accToken is renewed")
-            res.status(403).send({
-                message : "accToken is renewed",
-                access : newAccessToken
-            });
-            next();
+    try {
+        const refreshToken = verifyToken(req.header('refresh'));
+        const accessToken = verifyToken(req.header('access'));
+        const query = 'SELECT * FROM users WHERE ref_token = ?';
+        const [results] = await executeQueryPromise(query, req.header('refresh'));
+        if (results.length === 0) {
+            return res.status(401).json({ error: 'Wrong refresh Token' });
         }
-    } else {
-        if (refreshToken === null) { // case3: access token은 유효하지만, refresh token은 만료된 경우
-            const newRefreshToken = await genToken( accessToken.email, accessToken.student_name, "14d" );
-            updateToken("ref_token", accessToken.email, newRefreshToken);
-            console.log("refToken is renewed")
-            res.status(403).send({
+        if (results.is_coop == 0) {
+            return res.status(401).json({ error: 'Not Coop' });
+        }
+        if (accessToken === null) { 
+            if (refreshToken === null) { 
+                return res.status(403).send({
+                    message : "Expired AllToken, Logout",
+                    areTokensVaild: false
+                });
+            } else { 
+                const newAccessToken = await genToken(refreshToken.email, refreshToken.student_name, "1h");
+                return res.status(403).send({
+                    message : "accToken is renewed",
+                    access : newAccessToken
+                });
+            }
+        } else if (refreshToken === null) { 
+            const newRefreshToken = await genToken(accessToken.email, accessToken.student_name, "14d");
+            await updateToken("ref_token", accessToken.email, newRefreshToken);
+            return res.status(403).send({
                 message : "refToken is renewed",
                 refresh : newRefreshToken
             });
-            next();
-        } else { // case4: accesss token과 refresh token 모두가 유효한 경우
-            console.log("Token are all right")
+        } else { 
             next();
         }
+    } catch (error) {
+        console.error("Error in checkAdminTokens:", error);
+        res.status(500).send({ error: 'Internal Server Error' });
     }
 }
 

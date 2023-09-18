@@ -14,6 +14,10 @@ router.post("/", async (req, res) => {
   const updateUserPointQuery = "UPDATE users SET point = point - ? WHERE code_number = ? and point - ? >= 0";
   const selectUserPointQuery = "SELECT point FROM users WHERE code_number = ?";
 
+  if(minusPoint <= 0 | !minusPoint){
+    console.log(minusPoint);
+    return res.status(400).json({error:"결제하는 값이 0이하입니다."});
+  }
   try {
     const userResult = await executeQueryPromise(selectUserQuery, [code_number]);
     const value = userResult[0];

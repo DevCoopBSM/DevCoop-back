@@ -12,8 +12,11 @@ router.get("/", (req, res) => {
   ORDER BY date DESC
   LIMIT 10`;
   executeQuery(sql, id, (err, result) => {
-    if (err) throw err;
-
+    if (err) {
+      console.log(err)
+      throw err
+    };
+      
     if (result && result.length > 0) {
       return res.status(200).send(result);
     }

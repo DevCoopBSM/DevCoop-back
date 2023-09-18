@@ -20,7 +20,7 @@ router.get("/", (req, res) => {
       return res.status(500).send("Internal Server Error");
     }
 
-    console.log(result);
+    // console.log(result);
     //  // 결과가 배열 형태로 반환되므로 배열 형태로 응답을 구성합니다.
     //  const responseData = results.map((result) => ({
     //   date: result.date,
