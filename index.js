@@ -2,14 +2,15 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 app.use(express.json());
-
-
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 const port = 6002;
 const signupRouter = require("./routes/auth/signup");
 const loginRouter = require("./routes/auth/login");
+const logoutRouter = require("./routes/auth/logout");
+
 const meRouter = require("./routes/user/me");
-const stinfoRouter = require("./routes/user/stinfo");
-const adminloginRouter = require("./routes/auth/adminlogin");
+const stinfoRouter = require("./routes/user/studentinfo");
 const barcodeRouter = require("./routes/user/barcode");
 
 const chargeRouter = require("./routes/user/charge");
@@ -17,6 +18,8 @@ const payRouter = require("./routes/user/pay");
 
 // const chargeCompleteRouter = require("./routes/user/chagecomplete");
 // const payCompleteRouter = require("./routes/user/paycomplete");
+
+const adminloginRouter = require("./routes/auth/adminlogin");
 
 const adminChargeUserLogRouter = require("./routes/admin/adminChargeUserLog");
 const adminPayUserLogRouter = require("./routes/admin/adminPayUserLog");
@@ -50,6 +53,7 @@ app.use("/api/payuserlog", payUserLogRouter);
 
 
 app.use("/api/admin/login", adminloginRouter);
+app.use("/api/logout", logoutRouter);
 
 app.use("/api/admin/charge", chargeRouter);
 app.use("/api/admin/pay", payRouter);
