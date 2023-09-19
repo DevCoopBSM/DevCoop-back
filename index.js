@@ -30,6 +30,8 @@ const payUserLogRouter = require("./routes/user/payuserlog");
 const allUserRouter = require("./routes/user/alluser");
 const allChargeRouter = require("./routes/user/allcharge");
 
+const pwChangeRouter = require("./routes/auth/pwchange");
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
@@ -63,6 +65,8 @@ app.use("/api/chargelog", chargeLogRouter);
 app.use("/api/paylog", payLogRouter);
 app.use("/api/alluser", allUserRouter);
 app.use("/api/allcharge", allChargeRouter);
+
+app.use("/api/pwchange", pwChangeRouter);
 
 // CORS 하용 설정하기.
 app.use((req, res, next) => {
