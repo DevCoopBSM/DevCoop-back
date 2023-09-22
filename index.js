@@ -34,6 +34,11 @@ const allChargeRouter = require("./routes/user/allcharge");
 
 const pwChangeRouter = require("./routes/auth/pwchange");
 
+
+const receiptCrawlingRouter = require("./routes/crawl/receipt");
+const itemsCrawlingRouter = require("./routes/crawl/items");
+
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
@@ -72,6 +77,11 @@ app.use("/api/admin/paylog", payLogRouter);
 
 app.use("/api/admin/alluser", allUserRouter);
 app.use("/api/admin/pwchange", pwChangeRouter);
+
+
+app.use("/api/admin/crawl/receipt", receiptCrawlingRouter);
+app.use("/api/admin/crawl/items", itemsCrawlingRouter);
+
 
 // CORS 하용 설정하기.
 app.use((req, res, next) => {

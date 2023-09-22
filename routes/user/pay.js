@@ -8,7 +8,6 @@ router.use(checkAdminTokens);
 
 router.post("/", async (req, res) => {
   const { code_number, minusPoint, charger } = req.body;
-
   const selectUserQuery = "SELECT student_number, point, student_name FROM users WHERE code_number = ?";
   const insertPayLogQuery = 'INSERT INTO pay_log(code_number, date, type, inner_point, point, charger, verify_key ,student_name) VALUES(?, CURRENT_TIMESTAMP, 0, ?, ?, ?, "test", ?)';
   const updateUserPointQuery = "UPDATE users SET point = point - ? WHERE code_number = ? and point - ? >= 0";
