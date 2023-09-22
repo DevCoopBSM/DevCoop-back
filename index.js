@@ -56,7 +56,7 @@ app.use("/api/studentinfo", stinfoRouter);
 app.use("/api/chargeuserlog", chargeUserLogRouter);
 app.use("/api/payuserlog", payUserLogRouter);
 
-
+// 어드민 기능은 매점 내에서만 접근 가능, 다른곳에서 접근시 에러 발생시켜야함
 app.use("/api/admin/login", adminloginRouter);
 app.use("/api/logout", logoutRouter);
 
@@ -66,8 +66,7 @@ app.use("/api/admin/allcharge", allChargeRouter);
 
 
 app.use("/api/admin/barcode", barcodeRouter);
-// app.use("/api/admin/chargecomplete", chargeCompleteRouter);
-// app.use("/api/admin/paycomplete", payCompleteRouter);
+
 
 
 app.use("/api/admin/chargeuserlog", adminChargeUserLogRouter);
