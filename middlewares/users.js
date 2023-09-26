@@ -14,12 +14,12 @@ const handleExpiredTokens = async (accessToken, refreshToken, req, res) => {
     console.log('Received refreshToken:', refreshToken); // 추가된 로깅
     try {
         const query = 'SELECT * FROM users WHERE ref_token = ?';
-        const [results] = await executeQueryPromise(query, refreshToken);
+        const results = await executeQueryPromise(query, refreshToken);
         if (results.length === 0) {
             return res.status(401).json({ error: 'Wrong refresh Token' });
         }
 
-        if (!accessToken) {
+        if (!verifyToken(accessToken)) {
             const newAccessToken = await genToken(refreshToken.email, refreshToken.student_name, "1h");
             res.cookie('accessToken', newAccessToken, { httpOnly: true });
             return res.status(403).send({
@@ -28,7 +28,7 @@ const handleExpiredTokens = async (accessToken, refreshToken, req, res) => {
             });
         }
 
-        if (!refreshToken) {
+        if (!verifyToken(refreshToken)) {
             const newRefreshToken = await genToken(accessToken.email, accessToken.student_name, "14d");
             await updateToken("ref_token", accessToken.email, newRefreshToken);
             res.cookie('refreshToken', newRefreshToken, { httpOnly: true });
@@ -44,10 +44,10 @@ const handleExpiredTokens = async (accessToken, refreshToken, req, res) => {
 };
 
 async function checkTokens(req, res, next) {
-    const refreshToken = verifyToken(req.cookies.refreshToken);
-    const accessToken = verifyToken(req.cookies.accessToken);
+    const refreshToken = req.cookies.refreshToken;
+    const accessToken = req.cookies.accessToken;
     
-    if (!accessToken || !refreshToken) {
+    if (!verifyToken(accessToken) || !verifyToken(refreshToken)) {
         return handleExpiredTokens(accessToken, refreshToken, req, res);
     }
 
@@ -55,23 +55,29 @@ async function checkTokens(req, res, next) {
 }
 
 async function checkAdminTokens(req, res, next) {
-    const refreshToken = verifyToken(req.cookies.refreshToken);
-    const accessToken = verifyToken(req.cookies.accessToken);
-    const query = 'SELECT * FROM users WHERE ref_token = ?';
-    const [results] = await executeQueryPromise(query, refreshToken);
+    try {
+        const refreshToken = req.cookies.refreshToken;
+        const accessToken = req.cookies.accessToken;
 
-    if (results.length === 0) {
-        return res.status(401).json({ error: 'Wrong refresh Token' });
-    }
-    if (results.is_coop == 0) {
-        return res.status(401).json({ error: 'Not Coop' });
-    }
+        if (!verifyToken(accessToken) || !verifyToken(refreshToken)) {
+            return handleExpiredTokens(accessToken, refreshToken, req, res);
+        }
 
-    if (!accessToken || !refreshToken) {
-        return handleExpiredTokens(accessToken, refreshToken, req, res);
-    }
+        const query = 'SELECT is_coop FROM users WHERE ref_token = ?';
+        const results = await executeQueryPromise(query, refreshToken);
+        // console.log(results)
+        if (results.length === 0) {
+            return res.status(401).json({ error: 'Wrong refresh Token' });
+        }
+        if (results[0].is_coop == 0) {
+            return res.status(401).json({ error: 'Not Coop' });
+        }
 
-    next();
+        next();
+    } catch (error) {
+        console.error("Token verification error:", error);
+        res.status(401).json({ error: 'Token verification failed' });
+    }
 }
 
 module.exports = {
