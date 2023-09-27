@@ -6,7 +6,8 @@ router.post('/', async (req, res) => {
         // 쿠키에서 토큰 제거
         res.clearCookie('accessToken');
         res.clearCookie('refreshToken');
-        res.clearCookie('isLoggedIn');  // <-- 이 부분을 res.json() 호출 전으로 옮겼습니다.
+        res.clearCookie('isLoggedIn');
+        res.clearCookie('isAdminLoggedIn'); 
 
         return res.status(200).json({
             message: '로그아웃 되었습니다.',
