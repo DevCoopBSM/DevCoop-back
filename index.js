@@ -39,6 +39,10 @@ const receiptCrawlingRouter = require("./routes/crawl/receipt");
 const itemsCrawlingRouter = require("./routes/crawl/items");
 
 
+//제고 관련
+const addItemBarcodeRouter = require("./routes/admin/addItemBarcode");
+const inventoryCheckRouter = require("./routes/admin/inventoryCheck");
+const inventoryExcelRouter = require("./routes/admin/excel");
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
@@ -80,7 +84,9 @@ app.use("/api/admin/pwchange", pwChangeRouter);
 
 app.use("/api/admin/crawl/receipt", receiptCrawlingRouter);
 app.use("/api/admin/crawl/items", itemsCrawlingRouter);
-
+app.use("/api/admin/addItemBarcode", addItemBarcodeRouter);
+app.use("/api/admin/inventoryCheck", inventoryCheckRouter);
+app.use("/api/admin/excelDownload", inventoryExcelRouter);
 
 // CORS 하용 설정하기.
 app.use((req, res, next) => {

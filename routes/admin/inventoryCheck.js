@@ -6,10 +6,8 @@ const router = express.Router();
 router.use(express.json());
 router.use(checkAdminTokens);
 
-router.post('/', async(req, res) => {
-    const selectInventory = "select item_id, sum(quantity) from inventory group by item_id;d";
-    const selectReceipt = "SELECT item_id, sum(sale_qty) from receipt group by item_id;"
-
+router.get('/', async(req, res) => {
+    const selecItemQuary = "select inventory_id, item_name, quantity, last_updated from inventory";      
     try{
         const result = await executeQueryPromise(selecItemQuary); 
         console.log(result);

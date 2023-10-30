@@ -9,8 +9,6 @@ router.use((req, res, next) => checkTokens(req, res, next));
 
 router.post("/", async (req, res) => {
   try {
-    console.log(req.cookies.accessToken);
-    // 쿠키에서 토큰을 검증
     const verifyedToken = verifyToken(req.cookies.accessToken);
     const email = verifyedToken.email;
     const sql = 'select student_number, student_name, code_number, point from users WHERE email = ? ';
