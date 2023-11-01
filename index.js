@@ -4,6 +4,8 @@ const cors = require("cors");
 app.use(express.json());
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
+
+
 const port = 6002;
 const signupRouter = require("./routes/auth/signup");
 const loginRouter = require("./routes/auth/login");
@@ -34,12 +36,12 @@ const allChargeRouter = require("./routes/user/allcharge");
 
 const pwChangeRouter = require("./routes/auth/pwchange");
 
-
+//크롤링 부분
 const receiptCrawlingRouter = require("./routes/crawl/receipt");
 const itemsCrawlingRouter = require("./routes/crawl/items");
 
 
-//제고 관련
+//재고 관련
 const addItemBarcodeRouter = require("./routes/admin/addItemBarcode");
 const inventoryCheckRouter = require("./routes/admin/inventoryCheck");
 const inventoryExcelRouter = require("./routes/admin/excel");
@@ -88,7 +90,7 @@ app.use("/api/admin/addItemBarcode", addItemBarcodeRouter);
 app.use("/api/admin/inventoryCheck", inventoryCheckRouter);
 app.use("/api/admin/excelDownload", inventoryExcelRouter);
 
-// CORS 하용 설정하기.
+// CORS 하용 설정하기. << 이거 위에 cors() 되어있지 않음?
 app.use((req, res, next) => {
   res.setHeader("Content-Type", "application/json");
   res.header("Access-Control-Allow-Origin", "*");
