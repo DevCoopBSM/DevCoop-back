@@ -7,12 +7,12 @@ router.use(express.json());
 router.use(checkAdminTokens);
 
 router.get('/', async(req, res) => {
-    const selecItemQuary = "select inventory_id, item_name, quantity, last_updated from inventory";      
-    try{
-        const result = await executeQueryPromise(selecItemQuary); 
+    const selectItemQuery = "SELECT inventory_id, item_name, quantity, last_updated FROM inventory";      
+    try {
+        const result = await executeQueryPromise(selectItemQuery); 
         console.log(result);
         return res.status(200).send(result);
-    }catch(err){
+    } catch(err) {
         console.error('Error', err);
         return res.status(500).json({ error: "Internal server error." });
     }

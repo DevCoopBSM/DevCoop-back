@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
                 }
 
                 const query = `
-                    INSERT INTO receipt (sale_qty, dcm_sale_amt, item_code, sale_yn, bill_num, item_name, date)
+                    INSERT INTO receipt (sale_qty, dcm_sale_amt, item_id, sale_yn, bill_num, item_name, date)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
                 `;
 

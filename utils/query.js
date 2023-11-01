@@ -16,24 +16,23 @@ const util = require('util');
 
   // 콜백 형식 쿼리 실행 기능
 const executeQuery = (query, values = [], callback) => {
-  // console.log(query)
-  // console.log(values)
   pool.getConnection((err, connection) => {
     if (err) {
       console.error('Error connecting to the database:', err);
       return callback(err, null);
     }
 
-    connection.query(query, values, (err, results, fields) => {
-      connection.release(); // 연결을 해제합니다.
-
-      if (err) {
-        console.error('Error executing query:', err);
-        return callback(err, null);
-      }
-
-      callback(null, results);
-    });
+    try {
+      connection.query(query, values, (err, results, fields) => {
+        if (err) {
+          console.error('Error executing query:', err);
+          return callback(err, null);
+        }
+        callback(null, results);
+      });
+    } finally {
+      connection.release(); // 무조건 연결을 해제합니다.
+    }
   });
 }
 
