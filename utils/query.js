@@ -14,27 +14,19 @@ const util = require('util');
 //     }
 //   });
 
-  // 콜백 형식 쿼리 실행 기능
-const executeQuery = (query, values = [], callback) => {
-  pool.getConnection((err, connection) => {
-    if (err) {
-      console.error('Error connecting to the database:', err);
-      return callback(err, null);
-    }
 
-    try {
-      connection.query(query, values, (err, results, fields) => {
-        if (err) {
-          console.error('Error executing query:', err);
-          return callback(err, null);
-        }
-        callback(null, results);
-      });
-    } finally {
-      connection.release(); // 무조건 연결을 해제합니다.
-    }
-  });
-}
+
+// 콜백 형식 쿼리 실행 기능
+const executeQuery = (query, values = [], callback) => {
+  pool.execute(query, values, (queryErr, results, fields) => {
+    // 쿼리 실행 후 연결을 해제합니다.
+    if (queryErr) {
+      console.error('Error executing query:', queryErr);
+      return callback(queryErr, null);
+    }      
+      callback(null, results);
+    });
+};
 
 // promise 버전
 const executeQueryPromise = util.promisify(executeQuery);
