@@ -9,7 +9,7 @@ router.post("/", async (req, res) => {
   const { student_name, email, password } = req.body;
   try {
     const query = "SELECT email FROM users WHERE email = ?";
-    const [results] = await executeQueryPromise(query, email);
+    const [results] = await executeQueryPromise(query, [email]);
 
     if (results.length > 0) {
       return res.status(400).json({
@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
 
     const insert_query =
       "INSERT INTO users(student_name, email, password) VALUES (?, ?, ?)";
-    executeQueryPromise(insert_query, register_values);
+    executeQueryPromise(insert_query, [register_values]);
 
     return res
       .status(200)

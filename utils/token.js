@@ -48,16 +48,16 @@ const updateRefToken = async (email, token) => {
 };
 
 // 
-function base64(json) {
-    const stringified = JSON.stringify(json);
-    // JSON을 문자열화
-    const base64Encoded = Buffer.from(stringified).toString("base64");
-    // 문자열화 된 JSON 을 Base64 로 인코딩
-    const paddingRemoved = base64Encoded.replaceAll("=", "");
-    // Base 64 의 Padding(= or ==) 을 제거
+// function base64(json) {
+//     const stringified = JSON.stringify(json);
+//     // JSON을 문자열화
+//     const base64Encoded = Buffer.from(stringified).toString("base64");
+//     // 문자열화 된 JSON 을 Base64 로 인코딩
+//     const paddingRemoved = base64Encoded.replaceAll("=", "");
+//     // Base 64 의 Padding(= or ==) 을 제거
   
-    return paddingRemoved;
-  }
+//     return paddingRemoved;
+//   }
 
 // 아래 코드는 토큰에서 payload부분 해독하여 이메일 등을 추출하려고 달아둠
 const getPayload = (token) => {

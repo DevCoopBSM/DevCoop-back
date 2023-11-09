@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.use(express.json());
 router.use(checkAdminTokens);
+
 const selecItemQuary = "select item_name, item_id from items where barcode = ?";
 const insertInventoryQuary =
   "insert into inventory(item_id, item_name, quantity, last_updated) values(?, ?, ?, CURRENT_TIMESTAMP)";
@@ -41,20 +42,22 @@ router.post("/", async (req, res) => {
     console.log(barcode, quantity);
     return res
       .status(400)
-      .json({ error: "바코드 또는 수량입력이 잘못됐습니다." });
+      .json({ error: "바코드 또는 손실양이 잘못됐습니다." });
   }
   try {
+    const newquantity = -quantity;
+    console.log(newquantity);
     const result = await executeQueryPromise(selecItemQuary, [barcode]);
     if (result.length > 0) {
       const { item_name, item_id } = result[0];
       await executeQueryPromise(insertInventoryQuary, [
         item_id,
         item_name,
-        quantity,
+        newquantity,
       ]);
       console.log(item_name);
       return res.status(200).json({
-        success: "재고 등록 완료",
+        success: "손실 등록 완료",
         name: item_name,
       });
     } else {
