@@ -1,5 +1,5 @@
 const express = require("express");
-const { executeQueryPromise } = require("../../utils/query");
+const { executeQueryPromise } = require("../../../utils/query");
 const router = express.Router();
 router.use(express.json());
 

@@ -1,6 +1,6 @@
 const express = require("express");
-const { executeQueryPromise } = require("../../utils/query");
-const { checkAdminTokens } = require("../../middlewares/users");
+const { executeQueryPromise } = require("../../../utils/query");
+const { checkAdminTokens } = require("../../../middlewares/users");
 const router = express.Router();
 
 router.use(express.json());
