@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
     order by date desc limit 1`;
   console.log("check");
 
-  executeQuery(sql, id, (err, result) => {
+  executeQuery(sql, [id], (err, result) => {
     if (err) throw err;
     console.log("show");
 

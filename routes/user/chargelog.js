@@ -11,7 +11,7 @@ router.get("/", (req, res) => {
   WHERE code_number = ? AND type = 1
   ORDER BY date DESC
   LIMIT 10`;
-  executeQuery(sql, id, (err, result) => {
+  executeQuery(sql, [id], (err, result) => {
     if (err) {
       console.log(err)
       throw err
