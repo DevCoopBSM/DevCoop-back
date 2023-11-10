@@ -1,5 +1,6 @@
-const { executeQueryPromise } = require("../../../utils/query");
 const express = require("express");
+const { body, validationResult } = require('express-validator');
+const { executeQueryPromise } = require("../../../utils/query");
 const { getInfoFromReqToken } = require("../../../middlewares/users");
 const router = express.Router();
 
@@ -35,30 +36,20 @@ router.get("/:barcode", async (req, res) => {
     return res.status(500).json({ error: "서버 오류" });
   }
 });
-router.post("/", async (req, res) => {
+router.post("/",[
+  body('barcode').notEmpty().withMessage('바코드 누락'),
+  body('quantity').notEmpty().withMessage('수량 누락'),
+  body('reason').notEmpty().withMessage('사유 누락'),
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   const { barcode, quantity, reason } = req.body;
   const reqInfo = await getInfoFromReqToken(req);
   const writer_id = reqInfo.email;
 
   // 유효성 검증은 백엔드 몫, 조금더 좋은 유효성검증 방안을 찾아보자..
-  if (!barcode) {
-    console.log("empty barcode");
-    return res
-      .status(400)
-      .json({ error: "바코드 누락" });
-  }
-  if (!quantity) {
-    console.log("empty quantity");
-    return res
-      .status(400)
-      .json({ error: "수량 누락" });
-  }
-  if (!reason) {
-    console.log("empty reason");
-    return res
-      .status(400)
-      .json({ error: "사유 누락" });
-  }
 
   try {
     const result = await executeQueryPromise(selecItemQuary, [barcode]);
