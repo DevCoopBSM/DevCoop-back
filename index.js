@@ -27,10 +27,10 @@ const adminRouter = require("./routes/admin/adminRouter")
 
 
 const meRouter = require("./routes/user/me");
-const stinfoRouter = require("./routes/user/studentinfo");
+const userInfoRouter = require("./routes/user/userInfo");
 
-const chargeUserLogRouter = require("./routes/user/transaction/chargeuserlog");
-const payUserLogRouter = require("./routes/user/transaction/payuserlog");
+const chargeUserLogRouter = require("./routes/user/transaction/chargeUserLog");
+const payUserLogRouter = require("./routes/user/transaction/payUserLog");
 
 const receiptCrawlingRouter = require("./routes/crawl/receipt");
 const itemsCrawlingRouter = require("./routes/crawl/items");
@@ -46,7 +46,7 @@ app.use("/api/signup", signupRouter);
 app.use("/api/login", loginRouter);
 app.use("/api/logout", logoutRouter);
 app.use("/api/me", meRouter);
-app.use("/api/studentinfo", stinfoRouter);
+app.use("/api/userinfo", userInfoRouter);
 app.use("/api/chargeuserlog", chargeUserLogRouter);
 app.use("/api/payuserlog", payUserLogRouter);
 

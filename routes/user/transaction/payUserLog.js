@@ -3,6 +3,7 @@ const { executeQuery } = require("../../../utils/query");
 const router = express.Router();
 router.use(express.json());
 const sql = `select date, inner_point, type from pay_log where student_name = ? and type = 0 order by date desc limit 10`;
+
 router.get("/", async (req, res) => {
   const { clientname } = req.query;
   console.log(clientname);

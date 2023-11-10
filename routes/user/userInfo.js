@@ -5,7 +5,7 @@ const { executeQueryPromise } = require("../../utils/query");  // 가정: execut
 
 router.use(express.json());
 const { checkTokens } = require("../../middlewares/users");
-router.use((req, res, next) => checkTokens(req, res, next));
+router.use(checkTokens);
 
 router.post("/", async (req, res) => {
   try {
