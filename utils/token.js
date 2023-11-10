@@ -62,10 +62,12 @@ const updateRefToken = async (email, token) => {
 // 아래 코드는 토큰에서 payload부분 해독하여 이메일 등을 추출하려고 달아둠
 const getPayload = (token) => {
     const payload = token.split('.')[1];
-    return (Buffer.from(payload, 'base64').toString('utf8'));
+    return (JSON.parse(Buffer.from(payload, 'base64').toString('utf8')));
 };
 
-exports.genToken = genToken;
-exports.verifyToken = verifyToken;
-exports.updateRefToken = updateRefToken;
-exports.getPayload = getPayload;
+module.exports = {
+    genToken,
+    verifyToken,
+    updateRefToken,
+    getPayload,
+}
