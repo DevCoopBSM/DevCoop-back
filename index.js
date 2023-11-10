@@ -18,11 +18,13 @@ app.use(express.urlencoded({ extended: true }));
 
 const port = 6002;
 
-
-const adminRouter = require("./routes/admin/adminRouter")
+const adminloginRouter = require("./routes/auth/adminlogin");
 const signupRouter = require("./routes/auth/signup");
 const loginRouter = require("./routes/auth/login");
 const logoutRouter = require("./routes/auth/logout");
+
+const adminRouter = require("./routes/admin/adminRouter")
+
 
 const meRouter = require("./routes/user/me");
 const stinfoRouter = require("./routes/user/studentinfo");
@@ -30,6 +32,14 @@ const stinfoRouter = require("./routes/user/studentinfo");
 const chargeUserLogRouter = require("./routes/user/transaction/chargeuserlog");
 const payUserLogRouter = require("./routes/user/transaction/payuserlog");
 
+const receiptCrawlingRouter = require("./routes/crawl/receipt");
+const itemsCrawlingRouter = require("./routes/crawl/items");
+
+
+
+
+app.use("/api/crawl/receipt", receiptCrawlingRouter);
+app.use("/api/crawl/items", itemsCrawlingRouter);
 
 
 app.use("/api/signup", signupRouter);
@@ -41,6 +51,7 @@ app.use("/api/chargeuserlog", chargeUserLogRouter);
 app.use("/api/payuserlog", payUserLogRouter);
 
 // 어드민 기능은 매점 내에서만 접근 가능, 다른곳에서 접근시 에러 발생시켜야함
+app.use("/api/admin/login", adminloginRouter);
 app.use("/api/admin", adminRouter);
 
 

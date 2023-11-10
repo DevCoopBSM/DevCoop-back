@@ -2,11 +2,9 @@ const excel = require('exceljs');
 const fs = require('fs');
 const { executeQueryPromise } = require("../../../utils/query");//db연결을 포함한 promise형태의 쿼리문
 const express = require("express");
-const { checkAdminTokens } = require("../../../middlewares/users");//어드민 토큰을 검증하는 미들웨어
 const router = express.Router();
 
 router.use(express.json());
-router.use(checkAdminTokens);//어드민 토큰 검증 미들웨어 실행
 
 router.get('/', async(req, res) => {
   // 데이터베이스에서 데이터 검색

@@ -1,16 +1,26 @@
 const { verifyToken, genToken, getPayload } = require("../utils/token");
 const { executeQueryPromise } = require("../utils/query");
+const { JsonWebTokenError } = require("jsonwebtoken");
 
 const updateToken = async (tokentype, email, token) => {
     try {
-        const query = `UPDATE users SET ${tokentype} = ? WHERE email = ?`;
-        await executeQueryPromise(query, [token, email]);
+        const query = "UPDATE users SET ? = ? WHERE email = ?";
+        await executeQueryPromise(query, [tokentype, token, email]);
     } catch (error) {
         console.error("Error updating token:", error);
     }
 };
 
-const handleExpiredTokens = async (accessToken, refreshToken, req, res) => {
+function getTokens(req) {
+    const refreshToken = req.cookies.refreshToken;
+    const accessToken = req.cookies.accessToken;
+    return({accessToken: accessToken, refreshToken: refreshToken})
+}
+
+
+const handleExpiredTokens = async (req, res) => {
+    const accessToken = getTokens(req).accessToken;
+    const refreshToken = getTokens(req).refreshToken;
     console.log('Received refreshToken:', refreshToken); // 추가된 로깅
     try {
         const query = 'SELECT * FROM users WHERE ref_token = ?';
@@ -51,24 +61,23 @@ const handleExpiredTokens = async (accessToken, refreshToken, req, res) => {
     }
 };
 
-async function checkTokens(req, res, next) {
-    const refreshToken = req.cookies.refreshToken;
-    const accessToken = req.cookies.accessToken;
-    
-    if (!verifyToken(accessToken) || !verifyToken(refreshToken)) {
-        return handleExpiredTokens(accessToken, refreshToken, req, res);
-    }
 
+
+async function checkTokens(req, res, next) {
+    const accessToken = getTokens(req).accessToken;
+    const refreshToken = getTokens(req).refreshToken;
+    if (!verifyToken(accessToken) || !verifyToken(refreshToken)) {
+        return handleExpiredTokens(req, res);
+    }
     next();
 }
 
 async function checkAdminTokens(req, res, next) {
     try {
-        const refreshToken = req.cookies.refreshToken;
-        const accessToken = req.cookies.accessToken;
-
+        const accessToken = getTokens(req).accessToken;
+        const refreshToken = getTokens(req).refreshToken;
         if (!verifyToken(accessToken) || !verifyToken(refreshToken)) {
-            return handleExpiredTokens(accessToken, refreshToken, req, res);
+            return handleExpiredTokens(req, res);
         }
 
         const query = 'SELECT is_coop FROM users WHERE ref_token = ?';
@@ -88,8 +97,16 @@ async function checkAdminTokens(req, res, next) {
     }
 }
 
+
+const getInfoFromReqToken = async (req) => {
+    const accessToken = getTokens(req).accessToken;
+    // console.log(verifyToken(accessToken).email)
+    return (verifyToken(accessToken));
+};
+
 module.exports = {
     checkTokens,
     checkAdminTokens,
-    updateToken
+    updateToken,
+    getInfoFromReqToken,
 };

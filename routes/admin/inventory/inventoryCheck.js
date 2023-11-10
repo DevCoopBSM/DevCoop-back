@@ -1,10 +1,9 @@
 const { executeQueryPromise } = require("../../../utils/query");
 const express = require("express");
-const { checkAdminTokens } = require("../../../middlewares/users");
 const router = express.Router();
 
 router.use(express.json());
-router.use(checkAdminTokens);
+
 const selectItemQuery =
   "SELECT item_id , item_name, sum(quantity)as quantity,max(last_updated) as last_updated FROM inventory group by item_id, item_name order by last_updated desc";
 const selectDateItemQuery =
@@ -24,7 +23,7 @@ router.get("/", async (req, res) => {
         return res.status(200).send(date_result);
       } else {
         return res
-          .status(200)
+          .status(204)
           .json({ check: "해당기간에 재고가 존재하지 않습니다." });
       }
     } else {

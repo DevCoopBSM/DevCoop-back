@@ -2,8 +2,7 @@ const express = require("express");
 const { executeQuery } = require("../../../utils/query");
 const router = express.Router();
 router.use(express.json());
-const { checkTokens } = require("../../../middlewares/users");
-router.use((req, res, next) => checkTokens(req, res, next));
+
 
 router.post("/", (req, res) => {
   console.log(req.body);

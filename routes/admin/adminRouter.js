@@ -1,15 +1,13 @@
 const express = require("express");
 const router = express.Router();
+const { checkAdminTokens } = require("../../middlewares/users");
 
 
-
-
-const adminloginRouter = require("./auth/adminlogin");
-
-const addItemBarcodeRouter = require("./inventory/addItemBarcode");
+// add, remove를 insert로 통합
+const insertInventoryRouter = require("./inventory/insertInventory");
 const inventoryCheckRouter = require("./inventory/inventoryCheck");
 const inventoryExcelRouter = require("./inventory/excel");
-const removedItemBarcode = require("./inventory/removeItemBarcode");
+// const removedItemBarcode = require("./inventory/removeItemBarcode");
 
 const barcodeRouter = require("./auth/barcode");
 
@@ -26,17 +24,10 @@ const allChargeRouter = require("./all/allcharge");
 
 const pwChangeRouter = require("./auth/pwchange");
 
-const receiptCrawlingRouter = require("./crawl/receipt");
-const itemsCrawlingRouter = require("./crawl/items");
 
+// 아래 모든 요청에 대해 AdminToken 검증을 실시함
+router.use(checkAdminTokens)
 
-
-
-router.use("/crawl/receipt", receiptCrawlingRouter);
-router.use("/crawl/items", itemsCrawlingRouter);
-
-
-router.use("/login", adminloginRouter);
 router.use("/charge", chargeRouter);
 router.use("/pay", payRouter);
 router.use("/allcharge", allChargeRouter);
@@ -50,10 +41,10 @@ router.use("/paylog", payLogRouter);
 router.use("/alluser", allUserRouter);
 router.use("/pwchange", pwChangeRouter);
 
-router.use("/addItemBarcode", addItemBarcodeRouter);
+router.use("/insertinventory", insertInventoryRouter);
 router.use("/inventoryCheck", inventoryCheckRouter);
 router.use("/excelDownload", inventoryExcelRouter);
-router.use("/removedItemBarcode", removedItemBarcode);
+// router.use("/removedItemBarcode", removedItemBarcode);
 
 
 module.exports = router;

@@ -1,10 +1,9 @@
 const express = require("express");
 const { executeQueryPromise } = require("../../../utils/query");
-const { checkAdminTokens } = require("../../../middlewares/users");
 const router = express.Router();
 
 router.use(express.json());
-router.use(checkAdminTokens);
+
 
 const fetchUserDetailsByCodeNumber = "SELECT student_number, point, student_name, code_number FROM users WHERE code_number IN (?)";
 const insertIntoChargeLog = 'INSERT INTO charge_log(code_number, date, type, inner_point, point, charger, verify_key ,student_name) VALUES(?, CURRENT_TIMESTAMP, 1, ?, ?, ?, "test", ?)';
