@@ -28,9 +28,7 @@ const adminRouter = require("./routes/admin/adminRouter")
 
 const meRouter = require("./routes/user/me");
 const userInfoRouter = require("./routes/user/userInfo");
-
-const chargeUserLogRouter = require("./routes/user/transaction/chargeUserLog");
-const payUserLogRouter = require("./routes/user/transaction/payUserLog");
+const userLogRouter = require("./routes/user/transaction/userLog");
 
 const receiptCrawlingRouter = require("./routes/crawl/receipt");
 const itemsCrawlingRouter = require("./routes/crawl/items");
@@ -47,8 +45,10 @@ app.use("/api/login", loginRouter);
 app.use("/api/logout", logoutRouter);
 app.use("/api/me", meRouter);
 app.use("/api/userinfo", userInfoRouter);
-app.use("/api/chargeuserlog", chargeUserLogRouter);
-app.use("/api/payuserlog", payUserLogRouter);
+
+app.use("/api/userlog", userLogRouter);
+// app.use("/api/chargeuserlog", chargeUserLogRouter);
+// app.use("/api/payuserlog", payUserLogRouter);
 
 // 어드민 기능은 매점 내에서만 접근 가능, 다른곳에서 접근시 에러 발생시켜야함
 app.use("/api/admin/login", adminloginRouter);

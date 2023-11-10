@@ -5,7 +5,7 @@ router.use(express.json());
 
 
 router.post("/", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { code_number } = req.body;
   const sql = "select point, student_name from users WHERE code_number = ?";
   executeQuery(sql, [code_number], (err, [result]) => {
