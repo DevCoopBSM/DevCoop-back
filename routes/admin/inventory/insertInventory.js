@@ -1,7 +1,7 @@
 const express = require("express");
 const { body, validationResult } = require('express-validator');
-const { executeQueryPromise } = require("../../../utils/query");
-const { getInfoFromReqToken } = require("../../../middlewares/users");
+const { executeQueryPromise } = require("@query");
+const { getInfoFromReqToken } = require("@token");
 const router = express.Router();
 
 router.use(express.json());

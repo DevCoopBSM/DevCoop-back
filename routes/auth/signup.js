@@ -3,7 +3,7 @@ const app = express();
 const mysql = require("mysql2");
 const bcrypt = require("bcrypt");
 const router = express.Router();
-const { executeQueryPromise } = require("../../utils/query");
+const { executeQueryPromise } = require("@query");
 
 router.post("/", async (req, res) => {
   const { student_name, email, password } = req.body;

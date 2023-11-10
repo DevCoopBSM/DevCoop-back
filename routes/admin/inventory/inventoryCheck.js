@@ -1,4 +1,4 @@
-const { executeQueryPromise } = require("../../../utils/query");
+const { executeQueryPromise } = require("@query");
 const express = require("express");
 const router = express.Router();
 

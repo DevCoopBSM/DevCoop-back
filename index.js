@@ -1,4 +1,5 @@
 const express = require("express");
+require('module-alias/register');
 const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");

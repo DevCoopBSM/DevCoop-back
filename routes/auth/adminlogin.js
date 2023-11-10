@@ -1,8 +1,8 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router();
-const { executeQueryPromise } = require("../../utils/query");
-const { genToken, updateRefToken } = require("../../utils/token");
+const { executeQueryPromise } = require("@query");
+const { genToken, updateRefToken } = require("@token");
 
 router.use(express.json());
 

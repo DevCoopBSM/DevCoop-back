@@ -1,5 +1,5 @@
 const express = require("express");
-const { executeQueryPromise } = require("../../utils/query");
+const { executeQueryPromise } = require("@query");
 const router = express.Router();
 const bodyParser = require('body-parser');
 

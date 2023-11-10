@@ -1,5 +1,5 @@
-const { verifyToken, genToken, getPayload } = require("../utils/token");
-const { executeQueryPromise } = require("../utils/query");
+const { verifyToken, genToken } = require("@token");
+const { executeQueryPromise } = require('@query');
 const { JsonWebTokenError } = require("jsonwebtoken");
 
 const updateToken = async (tokentype, email, token) => {

@@ -1,6 +1,6 @@
 const express = require("express");
-const { executeQueryPromise } = require("../../../utils/query");
-const { checkAdminTokens } = require("../../../middlewares/users");
+const { executeQueryPromise } = require("@query");
+const { checkAdminTokens } = require("@token");
 const dotenv = require("dotenv");
 
 dotenv.config();

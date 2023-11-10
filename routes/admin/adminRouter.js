@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { checkAdminTokens } = require("../../middlewares/users");
+const { checkAdminTokens } = require("@token");
 
 
 // add, remove를 insert로 통합

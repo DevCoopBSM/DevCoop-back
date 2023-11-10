@@ -1,6 +1,6 @@
 const excel = require('exceljs');
 const fs = require('fs');
-const { executeQueryPromise } = require("../../../utils/query");//db연결을 포함한 promise형태의 쿼리문
+const { executeQueryPromise } = require("@query");//db연결을 포함한 promise형태의 쿼리문
 const express = require("express");
 const router = express.Router();
 
