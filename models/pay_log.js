@@ -12,7 +12,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     date: {
-      type: DataTypes.TEXT,
+      type: DataTypes.DATE,
       allowNull: true
     },
     type: {
@@ -20,11 +20,11 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     inner_point: {
-      type: DataTypes.TEXT,
+      type: DataTypes.INTEGER,
       allowNull: true
     },
     point: {
-      type: DataTypes.TEXT,
+      type: DataTypes.INTEGER,
       allowNull: true
     },
     charger_id: {

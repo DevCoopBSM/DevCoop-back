@@ -16,7 +16,7 @@ const executeQuery = (query, values = [], callback) => {
       console.error("Unable to obtain a connection from the pool");
       return callback(new Error("Unable to obtain a connection"), null);
     }
-    conn.execute(query, values, (queryErr, results, fields) => {
+    conn.query(query, values, (queryErr, results, fields) => {
       if (queryErr) {
         console.error("Error executing query:", queryErr);
         return callback(queryErr, null);

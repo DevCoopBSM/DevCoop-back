@@ -1,12 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { verifyToken, checkTokens } = require("@token");
-
+const { verifyToken } = require("@token");
 const { Users } = require("@models");  // Sequelize 모델이 정의된 디렉토리를 가리킵니다.
 
 
-router.use(express.json());
-router.use(checkTokens);
 
 
 router.post("/", async (req, res) => {

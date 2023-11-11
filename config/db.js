@@ -9,5 +9,6 @@ module.exports = {
 	database: process.env.DB_NAME,
 	waitForConnections : true,
 	connectionLimit: 30,
-	queueLimit: 0
+	queueLimit: 0,
+	// debug: true
 };

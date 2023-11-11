@@ -55,6 +55,6 @@
   "_moduleAliases": {
     "@query": "utils/query",
     "@token": "utils/token",
-    "@models": "models/init-models"
+    "@models": "models"
   }
 }

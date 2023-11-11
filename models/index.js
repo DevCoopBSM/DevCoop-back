@@ -6,8 +6,20 @@ const Sequelize = require('sequelize');
 const process = require('process');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+const config = require('../config/config')[env];
 const db = {};
+
+function toPascalCase(str) {
+  return str
+    // 먼저 모든 언더스코어(_)를 공백으로 치환합니다.
+    .replace(/_/g, ' ')
+    // 단어의 첫 글자를 대문자로 변환합니다.
+    .replace(/\w\S*/g, (txt) => {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    })
+    // 공백을 제거합니다.
+    .replace(/\s/g, '');
+}
 
 let sequelize;
 if (config.use_env_variable) {
@@ -28,7 +40,8 @@ fs
   })
   .forEach(file => {
     const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    db[model.name] = model;
+    const modelName = toPascalCase(file.replace('.js', ''));
+    db[modelName] = model;
   });
 
 Object.keys(db).forEach(modelName => {
