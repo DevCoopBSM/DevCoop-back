@@ -1,11 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { verifyToken } = require("../../utils/token");
-const { executeQueryPromise } = require("../../utils/query");  // 가정: executeQueryPromise는 Promise 버전의 executeQuery
+const { verifyToken, checkTokens } = require("@token");
+const { executeQueryPromise } = require("@query");  // 가정: executeQueryPromise는 Promise 버전의 executeQuery
 
 router.use(express.json());
-const { checkTokens } = require("../../middlewares/users");
-router.use((req, res, next) => checkTokens(req, res, next));
+router.use(checkTokens);
 
 router.post("/", async (req, res) => {
   try {

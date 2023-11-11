@@ -1,12 +1,11 @@
 const express = require("express");
-const { executeQuery } = require("../../utils/query");
+const { executeQuery } = require("@query");
 const router = express.Router();
 router.use(express.json());
-const { checkTokens } = require("../../middlewares/users");
-router.use((req, res, next) => checkTokens(req, res, next));
+
 
 router.post("/", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { code_number } = req.body;
   const sql = "select point, student_name from users WHERE code_number = ?";
   executeQuery(sql, [code_number], (err, [result]) => {

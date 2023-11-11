@@ -1,21 +1,23 @@
 const express = require("express");
-const { executeQueryPromise } = require("../../utils/query");
-const { checkAdminTokens } = require("../../middlewares/users");
+const { executeQueryPromise } = require("@query");
+const { getInfoFromReqToken } = require("@token")
 const router = express.Router();
 
 router.use(express.json());
-router.use(checkAdminTokens);
+
 
 const fetchUserDetailsByCodeNumber = "SELECT student_number, point, student_name, code_number FROM users WHERE code_number IN (?)";
-const insertIntoChargeLog = 'INSERT INTO charge_log(code_number, date, type, inner_point, point, charger, verify_key ,student_name) VALUES(?, CURRENT_TIMESTAMP, 1, ?, ?, ?, "test", ?)';
+const insertIntoChargeLog = 'INSERT INTO charge_log(code_number, date, type, inner_point, point, charger_id, verify_key ,student_name) VALUES(?, CURRENT_TIMESTAMP, 1, ?, ?, ?, "test", ?)';
 const updateUserPoints = "UPDATE users SET point = point + ? WHERE code_number = ?";
 
 router.post("/", async (req, res) => {
-  const { code_number, plusPoint, charger } = req.body;
-
+  const { list_code_number, plusPoint } = req.body;
+  console.log(list_code_number);
+  reqInfo = await getInfoFromReqToken(req);
+  const charger_id = reqInfo.email;
   try {
-    const userDetails = await executeQueryPromise(fetchUserDetailsByCodeNumber, [code_number]);
-
+    const userDetails = await executeQueryPromise(fetchUserDetailsByCodeNumber, list_code_number);
+    console.log(userDetails)
     if (userDetails.length === 0) {
       return res.status(401).json({ error: "해당 결과 없음" });
     }

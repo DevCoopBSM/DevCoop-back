@@ -1,5 +1,5 @@
 const express = require("express");
-const { executeQuery } = require("../../utils/query");
+const { executeQuery } = require("@query");
 const router = express.Router();
 router.use(express.json());
 
@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
     from charge_log, users  
     where charge_log.code_number = ? and users.code_number = charge_log.code_number and charge_log.type = 1 
     order by date desc limit 1;`;
-  executeQuery(sql, id, (err, result) => {
+  executeQuery(sql, [id], (err, result) => {
     if (err) throw err;
     console.log("check");
     if (result && result.length > 0) {

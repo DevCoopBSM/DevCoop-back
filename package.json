@@ -30,10 +30,11 @@
     "express-router": "^0.0.1",
     "express-session": "^1.17.3",
     "express-static": "^1.2.6",
-    "forever": "^4.0.3",
+    "express-validator": "^7.0.1",
     "hbs": "^4.2.0",
     "helmet": "^6.1.5",
     "jsonwebtoken": "^9.0.0",
+    "module-alias": "^2.2.3",
     "mysql": "^2.18.1",
     "mysql2": "^3.2.1",
     "nodemon": "^3.0.1",
@@ -48,5 +49,9 @@
     "sequelize": "^6.31.1",
     "sqlite3": "^5.1.6",
     "uuid": "^9.0.0"
+  },
+  "_moduleAliases": {
+    "@query": "utils/query",
+    "@token": "utils/token"
   }
 }

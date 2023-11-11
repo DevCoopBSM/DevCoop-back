@@ -1,8 +1,8 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router();
-const { executeQueryPromise } = require("../../utils/query");
-const { genToken, updateRefToken } = require("../../utils/token");
+const { executeQueryPromise } = require("@query");
+const { genToken, updateRefToken } = require("@token");
 
 router.use(express.json());
 
@@ -11,7 +11,7 @@ router.post("/", async (req, res) => {
 
   try {
     const query = "SELECT * FROM users WHERE email = ?";
-    const results = await executeQueryPromise(query, email);
+    const results = await executeQueryPromise(query, [email]);
 
     if (results.length === 0) {
       return res.status(401).json({ error: "이메일 또는 비밀번호가 잘못되었습니다" });
