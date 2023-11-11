@@ -20,7 +20,7 @@ const chargeLogRouter = require("./transaction/chargelog");
 const payLogRouter = require("./transaction/paylog");
 
 const allUserRouter = require("./all/alluser");
-const allChargeRouter = require("./all/allcharge");
+const allChargeRouter = require("./all/allCharge");
 
 const pwChangeRouter = require("./auth/pwchange");
 
