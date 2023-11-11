@@ -1,8 +1,12 @@
 const mysql = require("mysql2");
 const dbconfig = require("../config/db");
+const sequelizeconfig = require("../config/sequelize");
 // const connection = mysql.createConnection(dbconfig);
 const pool = mysql.createPool(dbconfig);
 const util = require("util");
+
+const { Sequelize } = require('sequelize');
+const sequelize = new Sequelize(sequelizeconfig)
 
 // connection.connect(() => {
 //     try {
@@ -66,8 +70,8 @@ process.on("SIGINT", () => {
 });
 
 module.exports = {
-  pool,
   sendPing,
   executeQuery,
   executeQueryPromise,
+  sequelize,
 };

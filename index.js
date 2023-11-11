@@ -3,6 +3,7 @@ require('module-alias/register');
 const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const { sequelize } = require("@query")
 app.use(cookieParser());
 app.use(express.json());
 const corsOptions = {
@@ -60,3 +61,11 @@ app.use("/api/admin", adminRouter);
 app.listen(port, (req, res) => {
   console.log(`WEB Server is running on port ${port}`);
 });
+
+sequelize.authenticate()
+  .then(() => {
+    console.log('DB Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
