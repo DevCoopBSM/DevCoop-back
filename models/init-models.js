@@ -1,5 +1,6 @@
 var DataTypes = require("sequelize").DataTypes;
 var _DailyInventoryChange = require("./DailyInventoryChange");
+var _SequelizeMeta = require("./SequelizeMeta");
 var _charge_log = require("./charge_log");
 var _dumy_receipt = require("./dumy_receipt");
 var _inventory = require("./inventory");
@@ -12,28 +13,30 @@ var _users = require("./users");
 
 function initModels(sequelize) {
   var DailyInventoryChange = _DailyInventoryChange(sequelize, DataTypes);
-  var charge_log = _charge_log(sequelize, DataTypes);
-  var dumy_receipt = _dumy_receipt(sequelize, DataTypes);
-  var inventory = _inventory(sequelize, DataTypes);
-  var inventoryStock = _inventoryStock(sequelize, DataTypes);
-  var items = _items(sequelize, DataTypes);
-  var pay_log = _pay_log(sequelize, DataTypes);
-  var receipt = _receipt(sequelize, DataTypes);
-  var temp_receipt = _temp_receipt(sequelize, DataTypes);
-  var users = _users(sequelize, DataTypes);
+  var SequelizeMeta = _SequelizeMeta(sequelize, DataTypes);
+  var ChargeLog = _charge_log(sequelize, DataTypes);
+  var DumyReceipt = _dumy_receipt(sequelize, DataTypes);
+  var Inventory = _inventory(sequelize, DataTypes);
+  var InventoryStock = _inventoryStock(sequelize, DataTypes);
+  var Items = _items(sequelize, DataTypes);
+  var PayLog = _pay_log(sequelize, DataTypes);
+  var Receipt = _receipt(sequelize, DataTypes);
+  var TempReceipt = _temp_receipt(sequelize, DataTypes);
+  var Users = _users(sequelize, DataTypes);
 
 
   return {
     DailyInventoryChange,
-    charge_log,
-    dumy_receipt,
-    inventory,
-    inventoryStock,
-    items,
-    pay_log,
-    receipt,
-    temp_receipt,
-    users,
+    SequelizeMeta,
+    ChargeLog,
+    DumyReceipt,
+    Inventory,
+    InventoryStock,
+    Items,
+    PayLog,
+    Receipt,
+    TempReceipt,
+    Users,
   };
 }
 module.exports = initModels;

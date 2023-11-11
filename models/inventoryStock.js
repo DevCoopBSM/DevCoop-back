@@ -19,14 +19,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.FLOAT,
       allowNull: false
     },
-    writer_id: {
-      type: DataTypes.STRING(50),
-      allowNull: false
-    },
-    reason: {
-      type: DataTypes.STRING(100),
-      allowNull: true
-    },
     store_date: {
       type: DataTypes.DATE,
       allowNull: false

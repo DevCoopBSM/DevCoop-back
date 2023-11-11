@@ -1,20 +1,8 @@
 const mysql = require("mysql2");
 const dbconfig = require("../config/db");
-const sequelizeconfig = require("../config/sequelize");
-// const connection = mysql.createConnection(dbconfig);
 const pool = mysql.createPool(dbconfig);
 const util = require("util");
 
-const { Sequelize } = require('sequelize');
-const sequelize = new Sequelize(sequelizeconfig)
-
-// connection.connect(() => {
-//     try {
-//       console.log("Mysql connect succeed");
-//     } catch (err) {
-//       throw err;
-//     }
-//   });
 
 // 콜백 형식 쿼리 실행 기능
 const executeQuery = (query, values = [], callback) => {
@@ -73,5 +61,4 @@ module.exports = {
   sendPing,
   executeQuery,
   executeQueryPromise,
-  sequelize,
 };

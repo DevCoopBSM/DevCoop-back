@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const {executeQuery, executeQueryPromise} = require('@query')
 const crypto = require("crypto");
-
+const { Users } = require("@models");
 
 const verifyToken = (token) => {
     try {
@@ -27,37 +27,18 @@ const genToken = (email, name, expiretime) => {
         email: email,
         name: name
     }
-    const token = sign(Payload, process.env.SECRET_KEY, { expiresIn: expiretime });
-    //const verifiedToken = jwt.verify(token, process.env.SECRET_KEY);
-    //console.log(verifiedToken);
-    return token;
+    return sign(Payload, process.env.SECRET_KEY, { expiresIn: expiretime });
 };
 
 const updateRefToken = async (email, token) => {
-    const query = `UPDATE users SET ref_token = ?  WHERE email = ?`;
-    executeQuery(query, [token, email], (err, result) => {
-        if (err) throw err;
-        console.log("update refreshtoken");
-        if (result && result.length > 0) {
-          console.log(result);
-          return result;
-        } else {
-            console.log("refresh update error");
-        };
-    });
+    try {
+        await Users.update({ ref_token: token }, { where: { email: email } });
+        console.log("Refresh token updated");
+    } catch (error) {
+        console.error("Error updating refresh token:", error);
+        throw error;
+    }
 };
-
-// 
-// function base64(json) {
-//     const stringified = JSON.stringify(json);
-//     // JSON을 문자열화
-//     const base64Encoded = Buffer.from(stringified).toString("base64");
-//     // 문자열화 된 JSON 을 Base64 로 인코딩
-//     const paddingRemoved = base64Encoded.replaceAll("=", "");
-//     // Base 64 의 Padding(= or ==) 을 제거
-  
-//     return paddingRemoved;
-//   }
 
 // 아래 코드는 토큰에서 payload부분 해독하여 이메일 등을 추출하려고 달아둠
 const getPayload = (token) => {
@@ -87,9 +68,8 @@ const handleExpiredTokens = async (req, res) => {
     const refreshToken = getTokens(req).refreshToken;
     console.log('Received refreshToken:', refreshToken); // 추가된 로깅
     try {
-        const query = 'SELECT * FROM users WHERE ref_token = ?';
-        const results = await executeQueryPromise(query, [refreshToken]);
-        if (results.length === 0) {
+        const user = await Users.findOne({ where: { ref_token: refreshToken } });
+        if (!user) {
             return res.status(401).json({ error: 'Wrong refresh Token' });
         }
 
