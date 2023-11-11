@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+const {verify, sign} = require('jsonwebtoken');
 const dotenv = require("dotenv");
 dotenv.config();
 const {executeQuery, executeQueryPromise} = require('@query')
@@ -7,7 +7,7 @@ const crypto = require("crypto");
 
 const verifyToken = (token) => {
     try {
-        return jwt.verify(token, process.env.SECRET_KEY);
+        return verify(token, process.env.SECRET_KEY);
     } catch (err) {
         /**
          * 다음과 같은 형태로 특정 에러에 대해서 핸들링해줄 수 있다. 
@@ -27,7 +27,7 @@ const genToken = (email, name, expiretime) => {
         email: email,
         name: name
     }
-    const token = jwt.sign(Payload, process.env.SECRET_KEY, { expiresIn: expiretime });
+    const token = sign(Payload, process.env.SECRET_KEY, { expiresIn: expiretime });
     //const verifiedToken = jwt.verify(token, process.env.SECRET_KEY);
     //console.log(verifiedToken);
     return token;
