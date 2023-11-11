@@ -53,6 +53,7 @@
   },
   "_moduleAliases": {
     "@query": "utils/query",
-    "@token": "utils/token"
+    "@token": "utils/token",
+    "@models": "models"
   }
 }
