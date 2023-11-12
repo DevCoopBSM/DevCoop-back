@@ -23,17 +23,30 @@ const verifyToken = (token) => {
 }
 
 
+
 const genToken = async (email, name, expiretime) => {
     console.log("genToken!");
-    const user = await Users.findOne({ where: { email: email }})
-    code_number = user.code_number
-    console.log(code_number)
-    const Payload = {
-        email: email,
-        name: name,
-        code_number: code_number,
+    try {
+        const user = await Users.findOne({ where: { email: email }});
+        // 사용자가 데이터베이스에 없을 경우 에러를 던집니다.
+        if (!user) {
+            throw new Error('사용자를 찾을 수 없습니다.');
+        }
+
+        console.log(user.code_number);
+        const payload = {
+            email: email,
+            name: name,
+            code_number: user.code_number,
+        };
+
+        return sign(payload, process.env.SECRET_KEY, { expiresIn: expiretime });
+    } catch (error) {
+        // 에러 로깅을 합니다.
+        console.error('토큰 생성 중 에러 발생:', error);
+        // 에러를 던지거나, 에러를 처리하는 방법에 따라 다른 값을 반환할 수 있습니다.
+        throw error;
     }
-    return sign(Payload, process.env.SECRET_KEY, { expiresIn: expiretime });
 };
 
 const updateRefToken = async (email, token) => {

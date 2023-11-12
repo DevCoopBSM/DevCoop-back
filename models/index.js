@@ -13,9 +13,9 @@ function toPascalCase(str) {
   return str
     // 먼저 모든 언더스코어(_)를 공백으로 치환합니다.
     .replace(/_/g, ' ')
-    // 단어의 첫 글자를 대문자로 변환합니다.
+    // 단어의 첫 글자만 대문자로 변환합니다.
     .replace(/\w\S*/g, (txt) => {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      return txt.charAt(0).toUpperCase() + txt.substr(1);
     })
     // 공백을 제거합니다.
     .replace(/\s/g, '');
@@ -49,8 +49,19 @@ Object.keys(db).forEach(modelName => {
     db[modelName].associate(db);
   }
 });
+// InventorySnapshots 모델에 아이템 관계 설정
+db.InventorySnapshots.belongsTo(db.Items, {
+  foreignKey: 'itemId', // InventorySnapshots 모델의 컬럼 이름
+  as: 'item'
+});
+
+// Items 모델에 스냅샷 관계 설정
+db.Items.hasMany(db.InventorySnapshots, {
+  foreignKey: 'itemId', // InventorySnapshots 모델의 컬럼 이름
+  as: 'snapshots'
+});
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
-
+console.log(Object.keys(db));
 module.exports = db;

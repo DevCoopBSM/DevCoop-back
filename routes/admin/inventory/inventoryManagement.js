@@ -1,23 +1,20 @@
-const { executeQueryPromise } = require("@query");
 const express = require("express");
 const router = express.Router();
+const InventoryService = require("@inventory");
 
-router.use(express.json());
-
-
-router.post("/", async (req, res) => {
-  const selectInventory =
-    "select item_id, sum(quantity) from inventory group by item_id";
-  const selectReceipt =
-    "SELECT item_id, sum(sale_qty) from receipt group by item_id";
+router.get("/", async (req, res) => {
+  const { start_date, end_date } = req.query;
 
   try {
-    const result = await executeQueryPromise(selecItemQuary);
-    console.log(result);
-    return res.status(200).send(result);
+    const inventoryChanges = await InventoryService.getInventoryChanges(start_date, end_date);
+    if (inventoryChanges.length > 0) {
+      res.status(200).send(inventoryChanges);
+    } else {
+      res.status(204).json({ message: "해당 기간에 재고가 존재하지 않습니다." });
+    }
   } catch (err) {
     console.error("Error", err);
-    return res.status(500).json({ error: "Internal server error." });
+    res.status(500).json({ error: "Internal server error." });
   }
 });
 

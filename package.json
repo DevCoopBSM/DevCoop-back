@@ -7,7 +7,8 @@
     "start": "nodemon index.js",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "npm start",
-    "dev:client": "cd client && npm start"
+    "dev:client": "cd client && npm start",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -55,6 +56,10 @@
   "_moduleAliases": {
     "@query": "utils/query",
     "@token": "utils/token",
-    "@models": "models"
+    "@models": "models",
+    "@inventory": "utils/inventory"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }

@@ -1,46 +1,23 @@
-const { sequelize, Inventory } = require("@models");
-
 const express = require("express");
 const router = express.Router();
-const { Op } = require('sequelize');
+const InventoryService = require("@inventory");
+
 router.get("/", async (req, res) => {
   const { start_date, end_date } = req.query;
 
   try {
-    if (start_date && end_date) {
-      console.log(start_date, end_date)
-      const date_result = await Inventory.findAll({
-        attributes: [
-          'item_id',
-          'item_name',
-          [sequelize.fn('SUM', sequelize.col('quantity')), 'quantity'],
-          [sequelize.fn('MAX', sequelize.col('last_updated')), 'last_updated']
-        ],
-        where: sequelize.where(sequelize.fn('DATE_FORMAT', sequelize.col('last_updated'), '%Y-%m-%d'), {
-          [Op.between]: [start_date, end_date]
-        }),
-        group: ['item_id', 'item_name'],
-        order: [['last_updated', 'DESC']]
-      });
-
-      if (date_result.length > 0) {
-        res.status(200).send(date_result);
-      } else {
-        res.status(204).json({ message: "해당 기간에 재고가 존재하지 않습니다." });
-      }
+    // 재고 변동사항을 조회합니다.
+    const inventoryChanges = await InventoryService.getInventoryChanges(start_date, end_date);
+    // const test = InventoryService.getInventoryByDate(end_date)
+    // console.log(InventoryService.getInventoryByDate(test))
+    if (inventoryChanges.length > 0) {
+      // 재고 스냅샷을 생성합니다.
+      // await InventoryService.createInventorySnapshot();
+      // const test = await InventoryService.getInventoryByDate(end_date)
+      // console.log(test)
+      res.status(200).send(inventoryChanges);
     } else {
-      const result = await Inventory.findAll({
-        attributes: [
-          'item_id',
-          'item_name',
-          [sequelize.fn('sum', sequelize.col('quantity')), 'quantity'],
-          [sequelize.fn('max', sequelize.col('last_updated')), 'last_updated']
-        ],
-        group: ['item_id', 'item_name'],
-        order: [['last_updated', 'DESC']]
-      });
-
-      res.status(200).send(result);
+      res.status(204).json({ message: "해당 기간에 재고가 존재하지 않습니다." });
     }
   } catch (err) {
     console.error("Error", err);
