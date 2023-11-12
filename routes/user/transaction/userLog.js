@@ -1,15 +1,13 @@
 const express = require("express");
 const { ChargeLog, PayLog } = require("@models");
+const { getInfoFromReqToken } = require("@token");
 const router = express.Router();
 router.use(express.json());
 
 router.get("/", async (req, res) => {
-  const { clientbarcode, type } = req.query;
-
-  if (!clientbarcode) {
-    console.log("clientbarcode is wrong");
-    return res.status(400).send("Bad: Missing clientbarcode");
-  }
+  const { type } = req.query;
+  reqInfo = await getInfoFromReqToken(req)
+  code_number = reqInfo.code_number
   if (type != 0 & type != 1) {
     console.log("type is wrong");
     return res.status(400).send("Bad: log type is wrong");
@@ -19,7 +17,7 @@ router.get("/", async (req, res) => {
     let Model = type == 1 ? ChargeLog : PayLog; // 모델을 선택합니다.
 
     const logs = await Model.findAll({
-      where: { code_number: clientbarcode },
+      where: { code_number: code_number },
       order: [['date', 'DESC']],
       limit: 10,
       attributes: ['date', 'inner_point', 'type']

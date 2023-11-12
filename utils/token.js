@@ -5,6 +5,8 @@ const {executeQuery, executeQueryPromise} = require('@query')
 const crypto = require("crypto");
 const { Users } = require("@models");
 
+
+
 const verifyToken = (token) => {
     try {
         return verify(token, process.env.SECRET_KEY);
@@ -21,11 +23,15 @@ const verifyToken = (token) => {
 }
 
 
-const genToken = (email, name, expiretime) => {
+const genToken = async (email, name, expiretime) => {
     console.log("genToken!");
+    const user = await Users.findOne({ where: { email: email }})
+    code_number = user.code_number
+    console.log(code_number)
     const Payload = {
         email: email,
-        name: name
+        name: name,
+        code_number: code_number,
     }
     return sign(Payload, process.env.SECRET_KEY, { expiresIn: expiretime });
 };
@@ -78,7 +84,6 @@ const handleExpiredTokens = async (req, res) => {
             res.cookie('accessToken', newAccessToken, { httpOnly: true });
             return res.status(401).send({
                 message : "accToken is renewed",
-                access : newAccessToken
             });
         }
 
@@ -88,7 +93,6 @@ const handleExpiredTokens = async (req, res) => {
             res.cookie('refreshToken', newRefreshToken, { httpOnly: true });
             return res.status(401).send({
                 message : "refToken is renewed",
-                refresh : newRefreshToken
             });
         }
         // 위의 조건 모두 실패하면 로그아웃 진행
