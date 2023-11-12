@@ -120,7 +120,8 @@ async function checkTokens(req, res, next) {
     next();
 }
 
-async function checkAdminTokens(req, res, next) {
+
+const checkAdminTokens = async (req, res, next) => {
     try {
         const accessToken = getTokens(req).accessToken;
         const refreshToken = getTokens(req).refreshToken;
@@ -128,13 +129,17 @@ async function checkAdminTokens(req, res, next) {
             return handleExpiredTokens(req, res);
         }
 
-        const query = 'SELECT is_coop FROM users WHERE ref_token = ?';
-        const results = await executeQueryPromise(query, [refreshToken]);
-        // console.log(results)
-        if (results.length === 0) {
+        // 여기서 Sequelize ORM을 사용하여 쿼리합니다.
+        const user = await Users.findOne({
+            where: { ref_token: refreshToken },
+            attributes: ['is_coop']
+        });
+
+        if (!user) {
             return res.status(401).json({ error: 'Wrong refresh Token' });
         }
-        if (results[0].is_coop == 0) {
+
+        if (user.is_coop === 0) {
             return res.status(401).json({ error: 'Not Coop' });
         }
 
@@ -145,13 +150,21 @@ async function checkAdminTokens(req, res, next) {
     }
 }
 
-
 const getInfoFromReqToken = async (req) => {
     const accessToken = getTokens(req).accessToken;
-    // console.log(verifyToken(accessToken).email)
-    return (verifyToken(accessToken));
+    const payload = verifyToken(accessToken);
+    if (!payload) {
+        throw new Error('Invalid access token');
+    }
+    // Sequelize ORM을 사용하여 사용자 정보를 가져옵니다.
+    const user = await Users.findOne({
+        where: { email: payload.email }
+    });
+    if (!user) {
+        throw new Error('User not found');
+    }
+    return user; // 사용자 정보를 반환합니다.
 };
-
 module.exports = {
     checkTokens,
     checkAdminTokens,
