@@ -49,17 +49,42 @@ Object.keys(db).forEach(modelName => {
     db[modelName].associate(db);
   }
 });
-// InventorySnapshots 모델에 아이템 관계 설정
-db.InventorySnapshots.belongsTo(db.Items, {
-  foreignKey: 'itemId', // InventorySnapshots 모델의 컬럼 이름
-  as: 'item'
-});
+
 
 // Items 모델에 스냅샷 관계 설정
 db.Items.hasMany(db.InventorySnapshots, {
   foreignKey: 'itemId', // InventorySnapshots 모델의 컬럼 이름
   as: 'snapshots'
 });
+
+db.Items.hasMany(db.Receipt, {
+  foreignKey: 'item_id', // Receipt 모델의 아이템 관련 컬럼 이름
+  as: 'receipts'
+});
+
+db.Items.hasMany(db.Inventory, {
+  foreignKey: 'item_id', // Receipt 모델의 아이템 관련 컬럼 이름
+  as: 'inventory'
+});
+
+// InventorySnapshots 모델에 아이템 관계 설정
+db.InventorySnapshots.belongsTo(db.Items, {
+  foreignKey: 'itemId', // InventorySnapshots 모델의 컬럼 이름
+  as: 'item'
+});
+
+
+db.Inventory.belongsTo(db.Items, {
+  foreignKey: 'item_id',
+  as: 'item'
+});
+
+
+db.Receipt.belongsTo(db.Items, {
+  foreignKey: 'item_id',
+  as: 'item'
+});
+
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

@@ -8,6 +8,7 @@ router.get("/", async (req, res) => {
   try {
     // 재고 변동사항을 조회합니다.
     const inventoryChanges = await InventoryService.getInventoryChanges(start_date, end_date);
+    // const inventoryChanges = await InventoryService.getInventoryChanges(start_date, end_date);
     // const test = InventoryService.getInventoryByDate(end_date)
     // console.log(InventoryService.getInventoryByDate(test))
     if (inventoryChanges.length > 0) {
