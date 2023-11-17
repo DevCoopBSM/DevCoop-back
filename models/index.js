@@ -94,4 +94,13 @@ db.Receipt.belongsTo(db.Items, {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 console.log(Object.keys(db));
+
+sequelize
+  .sync()
+  .then(() => {
+    console.log("모델들이 데이터베이스와 동기화되었습니다.");
+  })
+  .catch((error) => {
+    console.error("동기화 중 오류가 발생했습니다:", error);
+  });
 module.exports = db;
