@@ -7,7 +7,7 @@ router.get("/", async (req, res) => {
 
   try {
     // 재고 변동사항을 조회합니다.
-    const inventoryChanges = await InventoryService.getInventoryChanges(
+    const inventoryChanges = await InventoryService.getCombinedChanges(
       start_date,
       end_date,
     );

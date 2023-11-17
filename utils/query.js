@@ -1,16 +1,8 @@
 const mysql = require("mysql2");
 const dbconfig = require("../config/db");
-// const connection = mysql.createConnection(dbconfig);
 const pool = mysql.createPool(dbconfig);
 const util = require("util");
 
-// connection.connect(() => {
-//     try {
-//       console.log("Mysql connect succeed");
-//     } catch (err) {
-//       throw err;
-//     }
-//   });
 
 // 콜백 형식 쿼리 실행 기능
 const executeQuery = (query, values = [], callback) => {
@@ -24,7 +16,7 @@ const executeQuery = (query, values = [], callback) => {
       console.error("Unable to obtain a connection from the pool");
       return callback(new Error("Unable to obtain a connection"), null);
     }
-    conn.execute(query, values, (queryErr, results, fields) => {
+    conn.query(query, values, (queryErr, results, fields) => {
       if (queryErr) {
         console.error("Error executing query:", queryErr);
         return callback(queryErr, null);
@@ -66,7 +58,6 @@ process.on("SIGINT", () => {
 });
 
 module.exports = {
-  pool,
   sendPing,
   executeQuery,
   executeQueryPromise,
