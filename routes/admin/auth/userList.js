@@ -5,7 +5,7 @@ router.use(express.json());
 
 router.get("/", async (req, res) => {
   const sql =
-    "SELECT code_number, student_name, email, point, is_admin, is_coop FROM users";
+    "SELECT code_number, student_name, is_coop, email, point, is_admin FROM users";
   try {
     const result = await executeQueryPromise(sql);
     return res.status(200).send(result);

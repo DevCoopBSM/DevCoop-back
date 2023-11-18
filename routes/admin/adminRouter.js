@@ -9,7 +9,6 @@ const itemCheckRouter = require("./inventory/itemCheck");
 const inventoryCheckRouter = require("./inventory/inventoryCheck");
 const receiptCheckRouter = require("./inventory/receiptCheck");
 const inventoryExcelRouter = require("./inventory/excel");
-// const removedItemBarcode = require("./inventory/removeItemBarcode");
 
 const barcodeRouter = require("./auth/barcode");
 
@@ -20,7 +19,7 @@ const payRouter = require("./transaction/pay");
 const chargeLogRouter = require("./transaction/chargelog");
 const payLogRouter = require("./transaction/paylog");
 
-const allUserRouter = require("./all/alluser");
+const userListRouter = require("./auth/userList");
 const allChargeRouter = require("./all/allCharge");
 
 const pwChangeRouter = require("./auth/pwchange");
@@ -38,7 +37,7 @@ router.use("/payuserlog", adminPayUserLogRouter);
 router.use("/chargelog", chargeLogRouter);
 router.use("/paylog", payLogRouter);
 
-router.use("/alluser", allUserRouter);
+router.use("/userList", userListRouter);
 router.use("/pwchange", pwChangeRouter);
 
 router.use("/insertinventory", insertInventoryRouter);
