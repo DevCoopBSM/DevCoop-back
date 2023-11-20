@@ -4,9 +4,11 @@ const { checkAdminTokens } = require("@token");
 
 // add, remove를 insert로 통합
 const insertInventoryRouter = require("./inventory/insertInventory");
+const createSnapshotsRouter = require("./inventory/createSnapshots");
 const stockInfoRouter = require("./inventory/stockInfo");
 const itemCheckRouter = require("./inventory/itemCheck");
 const inventoryCheckRouter = require("./inventory/inventoryCheck");
+const inventoryByDayRouter = require("./inventory/inventoryByDay");
 const receiptCheckRouter = require("./inventory/receiptCheck");
 const inventoryExcelRouter = require("./inventory/excel");
 
@@ -41,9 +43,11 @@ router.use("/userList", userListRouter);
 router.use("/pwchange", pwChangeRouter);
 
 router.use("/insertinventory", insertInventoryRouter);
+router.use("/createsnapshots", createSnapshotsRouter);
 router.use("/stockInfo", stockInfoRouter);
 router.use("/itemCheck", itemCheckRouter);
 router.use("/inventoryCheck", inventoryCheckRouter);
+router.use("/inventoryByDay", inventoryByDayRouter);
 router.use("/receiptCheck", receiptCheckRouter);
 router.use("/excelDownload", inventoryExcelRouter);
 // router.use("/removedItemBarcode", removedItemBarcode);

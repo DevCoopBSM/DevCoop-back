@@ -1,10 +1,10 @@
 // models/inventorySnapshots.js
 
-const Sequelize = require('sequelize');
+const Sequelize = require("sequelize");
 
 module.exports = function (sequelize, DataTypes) {
   const InventorySnapshot = sequelize.define(
-    'InventorySnapshot',
+    "InventorySnapshot",
     {
       snapshot_id: {
         autoIncrement: true,
@@ -24,11 +24,16 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      writer_id: {
+        type: DataTypes.STRING(45),
+        allowNull: false,
+      },
     },
+
     {
-      tableName: 'InventorySnapshots',
+      tableName: "InventorySnapshots",
       timestamps: false,
-    }
+    },
   );
   return InventorySnapshot;
 };

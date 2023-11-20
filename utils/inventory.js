@@ -24,13 +24,13 @@ class InventoryService {
   }
 
   async getInventoryChanges(start_date, end_date) {
-    const StartDate = subtractOneDayAndConvertToUTC(start_date);
-    const endDate = addEndTimeAndConvertToUTC(end_date);
+    const startDate = await subtractOneDayAndConvertToUTC(start_date);
+    const endDate = await addEndTimeAndConvertToUTC(end_date);
     // items 테이블 조회
     const InventoryList = await Inventory.findAll({
       where: {
         last_updated: {
-          [Op.between]: [StartDate, endDate], // 'last_updated'가 'startDate'와 'endDate' 사이인 데이터만 조회
+          [Op.between]: [startDate, endDate], // 'last_updated'가 'startDate'와 'endDate' 사이인 데이터만 조회
         },
       },
       order: [["last_updated", "DESC"]],
@@ -40,13 +40,13 @@ class InventoryService {
   }
 
   async getReceiptChanges(start_date, end_date) {
-    const StartDate = subtractOneDayAndConvertToUTC(start_date);
+    const startDate = subtractOneDayAndConvertToUTC(start_date);
     const endDate = addEndTimeAndConvertToUTC(end_date);
     // items 테이블 조회
     const ReceiptList = await Receipt.findAll({
       where: {
         date: {
-          [Op.between]: [StartDate, endDate], // 'date'가 'startDate'와 'endDate' 사이인 데이터만 조회
+          [Op.between]: [startDate, endDate], // 'date'가 'startDate'와 'endDate' 사이인 데이터만 조회
         },
       },
       order: [["date", "DESC"]],
@@ -81,9 +81,9 @@ class InventoryService {
     return receiptChanges;
   }
 
-  async sumInventoryChangesByDay(startDate, endDate) {
-    if (!endDate) {
-      endDate = startDate; // endDate가 주어지지 않은 경우, endDate를 startDate와 동일하게 설정
+  async sumInventoryChangesByDay(startUTCDate, endUTCDate) {
+    if (!endUTCDate) {
+      endUTCDate = startUTCDate; // endDate가 주어지지 않은 경우, endDate를 startDate와 동일하게 설정
     }
 
     try {
@@ -115,7 +115,7 @@ class InventoryService {
         ],
         where: {
           last_updated: {
-            [Op.between]: [startDate, endDate], // 주어진 날짜 범위 내
+            [Op.between]: [startUTCDate, endUTCDate], // 주어진 날짜 범위 내
           },
         },
         group: ["item_id", "item_name"], // 아이템별 그룹화
@@ -128,7 +128,9 @@ class InventoryService {
     }
   }
   // 주어진 날짜 범위 내의 재고 변화를 조회하는 함수
-  async getCombinedChanges(startDate, endDate) {
+  async getCombinedChanges(start_date, end_date) {
+    const startDate = subtractOneDayAndConvertToUTC(start_date);
+    const endDate = addEndTimeAndConvertToUTC(end_date);
     const receiptChanges = await this.sumReceiptChangesByDay(
       startDate,
       endDate,
@@ -182,13 +184,12 @@ class InventoryService {
     // 가장 날짜와 가까운 스냅샷 조회
     const finalSnapshot = await this.findClosestSnapshotsByItem(date);
 
-    const finalInventory = {};
+    const finalInventory = [];
 
     // 아이템 별로 인벤토리 변화량을 계산
     for (const itemId in finalSnapshot) {
       if (finalSnapshot.hasOwnProperty(itemId)) {
         const closestSnapshot = finalSnapshot[itemId];
-        console.log(closestSnapshot);
 
         if (!closestSnapshot) {
           // 이전 스냅샷이 없는 경우, 로그를 남기고 함수를 패스합니다.
@@ -201,39 +202,45 @@ class InventoryService {
         // 아이템별로 가장 가까운 스냅샷 이후와 입력받은 날짜 사이의 인벤토리 변화량 계산
         const inventoryChange = await Inventory.findOne({
           attributes: [
-            [sequelize.fn("SUM", sequelize.col("quantity")), "sum_quantity"],
+            [sequelize.fn("SUM", sequelize.col("quantity")), "total_change"],
+            [
+              sequelize.fn("MAX", sequelize.col("last_updated")),
+              "last_updated",
+            ],
           ],
           where: {
             item_id: itemId,
             last_updated: {
-              [Op.gt]: closestSnapshot.snapshotDate
-                ? closestSnapshot.snapshotDate
-                : new Date(0),
-              [Op.lte]: new Date(date),
+              [Op.gt]: closestSnapshot.snapshotDate, // 가장 가까운 스냅샷 이후
+              [Op.lte]: date, // 입력받은 날짜까지
             },
           },
           include: [{ model: Items, as: "item" }],
           group: "item.item_id",
         });
-
+        console.log(inventoryChange);
         if (inventoryChange) {
-          const quantityChange = parseInt(
-            inventoryChange.dataValues.sum_quantity,
+          const totalChange = parseInt(
+            inventoryChange.dataValues.total_change,
             10,
           );
-          finalInventory[itemId] = {
+          finalInventory.push({
             item_id: itemId,
             item_name: inventoryChange.item.item_name,
-            quantity: closestSnapshot.quantity + quantityChange,
-            last_updated: date,
-          };
+            quantity: closestSnapshot.quantity + totalChange,
+            last_updated: inventoryChange.last_updated,
+          });
         } else {
           // 인벤토리 변화가 없는 경우, 스냅샷을 그대로 사용
-          finalInventory[itemId] = closestSnapshot;
+          finalInventory.push({
+            item_id: itemId,
+            item_name: closestSnapshot.itemName, // item_name을 가져오거나 필요한 값을 여기서 설정
+            quantity: closestSnapshot.quantity,
+            last_updated: closestSnapshot.snapshotDate,
+          });
         }
       }
     }
-
     return finalInventory;
   }
 
@@ -247,6 +254,7 @@ class InventoryService {
           [Op.lte]: date,
         },
       },
+      include: [{ model: Items, as: "item" }],
     });
     // 아이템 별로 가장 가까운 스냅샷을 찾음
     for (const snapshot of allSnapshots) {
@@ -259,6 +267,7 @@ class InventoryService {
       ) {
         closestSnapshots[itemId] = {
           snapshotDate: snapshotDate,
+          itemName: snapshot.item.item_name,
           quantity: snapshot.dataValues.quantity,
         };
       }
@@ -267,7 +276,7 @@ class InventoryService {
     return closestSnapshots;
   }
 
-  async createSnapshotForItem(itemId, quantity) {
+  async createSnapshotForItem(itemId, quantity, writer_id) {
     try {
       const currentTimestamp = new Date().getTime(); // 현재 타임스탬프를 얻습니다.
       console.log(currentTimestamp);
@@ -276,6 +285,7 @@ class InventoryService {
         snapshotDate: currentTimestamp,
         itemId: itemId,
         quantity: quantity,
+        writer_id: writer_id,
       });
 
       console.log(

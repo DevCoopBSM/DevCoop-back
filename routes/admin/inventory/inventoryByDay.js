@@ -3,18 +3,16 @@ const router = express.Router();
 const InventoryService = require("@inventory");
 
 router.get("/", async (req, res) => {
-  const { start_date, end_date } = req.query;
+  const { end_date } = req.query;
 
   try {
     // 재고 변동사항을 조회합니다.
-    const inventoryChanges = await InventoryService.getCombinedChanges(
-      start_date,
-      end_date,
-    );
+    const inventoryChanges =
+      await InventoryService.getInventoryByDate(end_date);
 
     if (inventoryChanges.length > 0) {
+      console.log(inventoryChanges);
       res.status(200).send(inventoryChanges);
-      // console.log(inventoryChanges);
     } else {
       res
         .status(204)
