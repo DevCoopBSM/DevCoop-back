@@ -278,24 +278,86 @@ class InventoryService {
 
   async createSnapshotForItem(itemId, quantity, writer_id) {
     try {
-      const currentTimestamp = new Date().getTime(); // 현재 타임스탬프를 얻습니다.
+      const currentTimestamp = new Date().getTime();
       console.log(currentTimestamp);
-      // 스냅샷 생성
-      await InventorySnapshots.create({
-        snapshotDate: currentTimestamp,
-        itemId: itemId,
-        quantity: quantity,
-        writer_id: writer_id,
+
+      // 이전 스냅샷 조회
+      const previousSnapshot = await InventorySnapshots.findOne({
+        where: { itemId },
+        order: [["snapshotDate", "DESC"]],
       });
 
-      console.log(
-        `Snapshot created for Item ID ${itemId} at timestamp ${currentTimestamp}`,
-      );
+      if (!previousSnapshot) {
+        await InventorySnapshots.create({
+          snapshotDate: currentTimestamp,
+          itemId,
+          quantity,
+          writer_id,
+        });
+
+        console.log(
+          `Snapshot created for Item ID ${itemId} at timestamp ${currentTimestamp}`,
+        );
+      } else {
+        const previousQuantity = previousSnapshot.quantity;
+        const previousDate = previousSnapshot.snapshotDate;
+        const inventoryChange = await Inventory.findOne({
+          attributes: [
+            [sequelize.fn("SUM", sequelize.col("quantity")), "total_change"],
+          ],
+          where: {
+            item_id: itemId,
+            last_updated: {
+              [Op.gt]: previousDate, // 가장 가까운 스냅샷 이후
+              [Op.lte]: currentTimestamp, // 입력받은 날짜까지
+            },
+          },
+        });
+        const diff = previousQuantity + inventoryChange.total_change - quantity;
+        if (diff === 0) {
+          console.log("No change in quantity.");
+        } else if (diff < 0) {
+          console.log(`Quantity increased by ${-diff}.`);
+          await InventorySnapshots.create({
+            snapshotDate: currentTimestamp,
+            itemId,
+            quantity: quantity,
+            writer_id,
+          });
+
+          await Inventory.create({
+            snapshotDate: currentTimestamp - 300000,
+            itemId,
+            quantity: diff,
+            writer_id,
+            reason: "자동생성 초과",
+          });
+        } else {
+          console.log(`Quantity decreased by ${diff}.`);
+          console.warn("Warning: Quantity decreased. Verify the data.");
+          await InventorySnapshots.create({
+            snapshotDate: currentTimestamp,
+            itemId,
+            quantity: quantity,
+            writer_id,
+          });
+
+          await Inventory.create({
+            snapshotDate: currentTimestamp - 300000,
+            itemId,
+            quantity: diff,
+            writer_id,
+            reason: "자동생성 손실",
+          });
+          // 여기에서 경고를 표시하거나 예외를 throw할 수 있습니다.
+        }
+      }
     } catch (error) {
       console.error(`Error creating snapshot: ${error.message}`);
       throw error;
     }
   }
+
   async createMondaySnapshot(itemID, date) {
     date = convertKSTtoUTC(date);
 

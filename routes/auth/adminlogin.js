@@ -14,14 +14,18 @@ router.post("/", async (req, res) => {
     const results = await executeQueryPromise(query, [email]);
 
     if (results.length === 0) {
-      return res.status(401).json({ error: "이메일 또는 비밀번호가 잘못되었습니다" });
+      return res
+        .status(401)
+        .json({ error: "이메일 또는 비밀번호가 잘못되었습니다" });
     }
 
     const user = results[0];
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      return res.status(401).json({ error: "이메일 또는 비밀번호가 잘못되었습니다" });
+      return res
+        .status(401)
+        .json({ error: "이메일 또는 비밀번호가 잘못되었습니다" });
     }
 
     if (user.is_admin !== 1) {
@@ -33,10 +37,10 @@ router.post("/", async (req, res) => {
     await updateRefToken(email, refreshToken);
 
     // 쿠키에 토큰 및 로그인 상태 저장
-    res.cookie('accessToken', accessToken, { httpOnly: true });
-    res.cookie('refreshToken', refreshToken, { httpOnly: true });
-    res.cookie('isAdminLoggedIn', 'true', { httpOnly: false, maxAge: 3600000 });
-    res.cookie('isLoggedIn', 'true', { httpOnly: false, maxAge: 3600000 }); 
+    res.cookie("accessToken", accessToken, { httpOnly: true });
+    res.cookie("refreshToken", refreshToken, { httpOnly: true });
+    res.cookie("isAdminLoggedIn", "true", { httpOnly: false });
+    res.cookie("isLoggedIn", "true", { httpOnly: false });
 
     return res.status(200).json({
       message: "로그인이 성공적으로 되었습니다",

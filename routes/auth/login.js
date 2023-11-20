@@ -33,7 +33,7 @@ async function handleLogin(req, res) {
     res
       .cookie("accessToken", accessToken, { httpOnly: true }) // httpOnly는 JavaScript를 통한 접근을 제한
       .cookie("refreshToken", refreshToken, { httpOnly: true })
-      .cookie("isLoggedIn", "true", { httpOnly: false, maxAge: 3600000 })
+      .cookie("isLoggedIn", "true", { httpOnly: false })
       .status(200)
       .json({
         message: "로그인이 성공적으로 되었습니다",
