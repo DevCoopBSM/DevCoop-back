@@ -61,12 +61,19 @@ const getPayload = (token) => {
   return JSON.parse(Buffer.from(payload, "base64").toString("utf8"));
 };
 
+const clearAllCookies = async (res) => {
+  res.clearCookie("accessToken");
+  res.clearCookie("refreshToken");
+  res.clearCookie("isLoggedIn");
+  res.clearCookie("isAdminLoggedIn");
+};
+
 const updateToken = async (tokentype, email, token) => {
   try {
     const query = "UPDATE users SET ? = ? WHERE email = ?";
     await executeQueryPromise(query, [tokentype, token, email]);
   } catch (error) {
-    console.error("Error updating token:", error);
+    await clearAllCookies(res);
   }
 };
 
@@ -83,7 +90,8 @@ const handleExpiredTokens = async (req, res) => {
   try {
     const user = await Users.findOne({ where: { ref_token: refreshToken } });
     if (!user) {
-      return res.status(401).json({ error: "Wrong refresh Token" });
+      await clearAllCookies(res);
+      return res.status(302).redirect("/admin/login");
     }
     console.log(user);
     if (!verifyToken(accessToken)) {
@@ -111,21 +119,15 @@ const handleExpiredTokens = async (req, res) => {
       });
     }
     // 위의 조건 모두 실패하면 로그아웃 진행
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
-    res.clearCookie("isLoggedIn");
-    res.clearCookie("isAdminLoggedIn");
-    return res.status(401).send({
+    await clearAllCookies(res);
+    return res.status(302).send({
       message: "Renewing Token is fail, logout",
     });
   } catch (error) {
     // 에러가 나도 로그아웃!
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
-    res.clearCookie("isLoggedIn");
-    res.clearCookie("isAdminLoggedIn");
+    await clearAllCookies(res);
     console.error("Error in handleExpiredTokens:", error);
-    return res.status(500).send({
+    return res.status(302).send({
       message: "handleExpiredTokens is Fail",
     });
   }
