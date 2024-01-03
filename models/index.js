@@ -91,7 +91,12 @@ db.Receipt.belongsTo(db.Items, {
   as: "item",
 });
 
-db.sequelize = sequelize;
+// 관계 설정
+db.Users.hasMany(db.ChargeLog, { foreignKey: "code_number" });
+db.Users.hasMany(db.PayLog, { foreignKey: "code_number" });
+db.ChargeLog.belongsTo(db.Users, { foreignKey: "code_number" });
+db.PayLog.belongsTo(db.Users, { foreignKey: "code_number" });
+
 db.Sequelize = Sequelize;
 console.log(Object.keys(db));
 

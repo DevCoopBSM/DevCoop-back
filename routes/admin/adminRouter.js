@@ -12,6 +12,8 @@ const inventoryByDayRouter = require("./inventory/inventoryByDay");
 const receiptCheckRouter = require("./inventory/receiptCheck");
 const inventoryExcelRouter = require("./inventory/excel");
 
+const pointLogRouter = require("./pointmanage/pointlogs");
+
 const barcodeRouter = require("./auth/barcode");
 
 const adminChargeUserLogRouter = require("./transaction/adminChargeUserLog");
@@ -38,6 +40,8 @@ router.use("/chargeuserlog", adminChargeUserLogRouter);
 router.use("/payuserlog", adminPayUserLogRouter);
 router.use("/chargelog", chargeLogRouter);
 router.use("/paylog", payLogRouter);
+
+router.use("/pointlog", pointLogRouter);
 
 router.use("/userList", userListRouter);
 router.use("/pwchange", pwChangeRouter);

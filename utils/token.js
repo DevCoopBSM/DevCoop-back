@@ -91,7 +91,8 @@ const handleExpiredTokens = async (req, res) => {
     const user = await Users.findOne({ where: { ref_token: refreshToken } });
     if (!user) {
       await clearAllCookies(res);
-      return res.status(302).redirect("/admin/login");
+      res.redirect("/admin/login");
+      return res.status(302);
     }
     console.log(user);
     if (!verifyToken(accessToken)) {
@@ -114,12 +115,14 @@ const handleExpiredTokens = async (req, res) => {
       );
       await updateToken("ref_token", accessToken.email, newRefreshToken);
       res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
+      res.redirect("/admin/login");
       return res.status(401).send({
         message: "refToken is renewed",
       });
     }
     // 위의 조건 모두 실패하면 로그아웃 진행
     await clearAllCookies(res);
+    res.redirect("/admin/login");
     return res.status(302).send({
       message: "Renewing Token is fail, logout",
     });
