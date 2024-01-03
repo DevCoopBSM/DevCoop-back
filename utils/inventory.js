@@ -1,5 +1,5 @@
 const {
-  sequelize,
+  Sequelize,
   Inventory,
   Items,
   InventorySnapshots,
@@ -64,10 +64,10 @@ class InventoryService {
       attributes: [
         "item_id",
         [
-          sequelize.fn("SUM", sequelize.col("sale_qty")),
+          Sequelize.fn("SUM", Sequelize.col("sale_qty")),
           "total_negative_change",
         ], // 아이템 개수 합산 (음수로)
-        [sequelize.fn("MAX", sequelize.col("date")), "last_updated"], // 가장 최근 업데이트 날짜
+        [Sequelize.fn("MAX", Sequelize.col("date")), "last_updated"], // 가장 최근 업데이트 날짜
       ],
       where: {
         date: {
@@ -93,25 +93,25 @@ class InventoryService {
           "item_id",
           "item_name",
           [
-            sequelize.fn(
+            Sequelize.fn(
               "SUM",
-              sequelize.literal(
+              Sequelize.literal(
                 "CASE WHEN quantity > 0 THEN quantity ELSE 0 END",
               ),
             ),
             "total_positive_change",
           ],
           [
-            sequelize.fn(
+            Sequelize.fn(
               "SUM",
-              sequelize.literal(
+              Sequelize.literal(
                 "CASE WHEN quantity < 0 THEN quantity ELSE 0 END",
               ),
             ),
             "total_negative_change",
           ],
-          [sequelize.fn("SUM", sequelize.col("quantity")), "total_change"],
-          [sequelize.fn("MAX", sequelize.col("last_updated")), "last_updated"], // 가장 최근 업데이트 날짜
+          [Sequelize.fn("SUM", Sequelize.col("quantity")), "total_change"],
+          [Sequelize.fn("MAX", Sequelize.col("last_updated")), "last_updated"], // 가장 최근 업데이트 날짜
         ],
         where: {
           last_updated: {
@@ -202,9 +202,9 @@ class InventoryService {
         // 아이템별로 가장 가까운 스냅샷 이후와 입력받은 날짜 사이의 인벤토리 변화량 계산
         const inventoryChange = await Inventory.findOne({
           attributes: [
-            [sequelize.fn("SUM", sequelize.col("quantity")), "total_change"],
+            [Sequelize.fn("SUM", Sequelize.col("quantity")), "total_change"],
             [
-              sequelize.fn("MAX", sequelize.col("last_updated")),
+              Sequelize.fn("MAX", Sequelize.col("last_updated")),
               "last_updated",
             ],
           ],
@@ -303,7 +303,7 @@ class InventoryService {
         const previousDate = previousSnapshot.snapshotDate;
         const inventoryChange = await Inventory.findOne({
           attributes: [
-            [sequelize.fn("SUM", sequelize.col("quantity")), "total_change"],
+            [Sequelize.fn("SUM", Sequelize.col("quantity")), "total_change"],
           ],
           where: {
             item_id: itemId,
@@ -394,10 +394,10 @@ class InventoryService {
         },
         attributes: [
           "item_id",
-          [sequelize.fn("SUM", sequelize.col("sale_qty")), "total_negative"],
+          [Sequelize.fn("SUM", Sequelize.col("sale_qty")), "total_negative"],
         ],
         group: ["item_id"],
-        having: sequelize.literal("total_negative > 0"), // 개수의 총합이 0보다 큰 경우만 선택
+        having: Sequelize.literal("total_negative > 0"), // 개수의 총합이 0보다 큰 경우만 선택
       });
       console.log(currentReceipt);
       // 해당 itemID에 대해, date부터 endDay까지의 재고량의 총합을 구합니다.
@@ -411,10 +411,10 @@ class InventoryService {
         },
         attributes: [
           "item_id",
-          [sequelize.fn("SUM", sequelize.col("quantity")), "total_quantity"],
+          [Sequelize.fn("SUM", Sequelize.col("quantity")), "total_quantity"],
         ],
         group: ["item_id"],
-        having: sequelize.literal("total_quantity > 0"), // 개수의 총합이 0보다 큰 경우만 선택
+        having: Sequelize.literal("total_quantity > 0"), // 개수의 총합이 0보다 큰 경우만 선택
       });
 
       // currentInventory에서 총합을 가져온 후, 월요일 스냅샷을 생성합니다.
