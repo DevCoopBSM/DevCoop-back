@@ -1,5 +1,5 @@
 const express = require("express");
-const { Users, ChargeLog, sequelize } = require('@models'); // Sequelize 모델을 가져옵니다.
+const { Users, ChargeLog, sequelize } = require("@models"); // Sequelize 모델을 가져옵니다.
 const { getInfoFromReqToken } = require("@token");
 const router = express.Router();
 
@@ -18,9 +18,9 @@ router.post("/", async (req, res) => {
     // 유저 상세정보 조회
     const userDetails = await Users.findAll({
       where: {
-        code_number: list_code_number
+        code_number: list_code_number,
       },
-      transaction: transaction
+      transaction: transaction,
     });
 
     if (userDetails.length === 0) {
@@ -30,16 +30,19 @@ router.post("/", async (req, res) => {
 
     for (const user of userDetails) {
       // ChargeLog에 기록
-      await ChargeLog.create({
-        code_number: user.code_number,
-        date: new Date(),
-        type: 1,
-        inner_point: plusPoint,
-        point: user.point,
-        charger_id: charger_id,
-        verify_key: "test",
-        student_name: user.student_name
-      }, { transaction: transaction });
+      await ChargeLog.create(
+        {
+          code_number: user.code_number,
+          date: new Date(),
+          type: 1,
+          inner_point: plusPoint,
+          point: user.point,
+          charger_id: charger_id,
+          verify_key: "test",
+          student_name: user.student_name,
+        },
+        { transaction: transaction },
+      );
 
       // 유저 포인트 업데이트
       user.point += plusPoint;
@@ -60,6 +63,5 @@ router.post("/", async (req, res) => {
     return res.status(500).json({ error: "Error in batch insert" });
   }
 });
-
 
 module.exports = router;

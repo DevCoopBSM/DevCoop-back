@@ -97,6 +97,8 @@ db.Users.hasMany(db.PayLog, { foreignKey: "code_number" });
 db.ChargeLog.belongsTo(db.Users, { foreignKey: "code_number" });
 db.PayLog.belongsTo(db.Users, { foreignKey: "code_number" });
 
+//Sequelize와 sequelize 초기화
+db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 console.log(Object.keys(db));
 
