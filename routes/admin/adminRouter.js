@@ -24,9 +24,11 @@ const chargeLogRouter = require("./transaction/chargelog");
 const payLogRouter = require("./transaction/paylog");
 
 const userListRouter = require("./auth/userList");
+const userCreateRouter = require("./auth/userCreate");
+const userDeleteRouter = require("./auth/userDelete");
 const allChargeRouter = require("./all/allCharge");
 
-const pwChangeRouter = require("./auth/pwchange");
+const pwChangeRouter = require("./auth/pwChange");
 
 // 아래 모든 요청에 대해 AdminToken 검증을 실시함
 router.use(checkAdminTokens);
@@ -44,7 +46,9 @@ router.use("/paylog", payLogRouter);
 router.use("/pointlog", pointLogRouter);
 
 router.use("/userList", userListRouter);
-router.use("/pwchange", pwChangeRouter);
+router.use("/userCreate", userCreateRouter);
+router.use("/userDelete", userDeleteRouter);
+router.use("/pwChange", pwChangeRouter);
 
 router.use("/insertinventory", insertInventoryRouter);
 router.use("/createsnapshots", createSnapshotsRouter);
