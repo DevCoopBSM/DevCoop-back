@@ -60,7 +60,7 @@ Object.keys(db).forEach((modelName) => {
 });
 
 // Items 모델에 스냅샷 관계 설정
-db.Items.hasMany(db.InventorySnapshots, {
+db.Items.hasMany(db.InventorySnapshot, {
   foreignKey: "itemId", // InventorySnapshots 모델의 컬럼 이름
   as: "snapshots",
 });
@@ -76,7 +76,7 @@ db.Items.hasMany(db.Inventory, {
 });
 
 // InventorySnapshots 모델에 아이템 관계 설정
-db.InventorySnapshots.belongsTo(db.Items, {
+db.InventorySnapshot.belongsTo(db.Items, {
   foreignKey: "itemId", // InventorySnapshots 모델의 컬럼 이름
   as: "item",
 });
@@ -91,9 +91,15 @@ db.Receipt.belongsTo(db.Items, {
   as: "item",
 });
 
-// 관계 설정
-db.Users.hasMany(db.ChargeLog, { foreignKey: "code_number" });
-db.Users.hasMany(db.PayLog, { foreignKey: "code_number" });
+// // 관계 설정
+db.Users.hasMany(db.ChargeLog, {
+  sourceKey: "code_number",
+  foreignKey: "code_number",
+});
+db.Users.hasMany(db.PayLog, {
+  sourceKey: "code_number",
+  foreignKey: "code_number",
+});
 db.ChargeLog.belongsTo(db.Users, { foreignKey: "code_number" });
 db.PayLog.belongsTo(db.Users, { foreignKey: "code_number" });
 
@@ -102,8 +108,9 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 console.log(Object.keys(db));
 
+// 동기화는 .sync({ alter: true }) 이 옵션으로
 sequelize
-  .sync()
+  .sync({ alter: true })
   .then(() => {
     console.log("모델들이 데이터베이스와 동기화되었습니다.");
   })

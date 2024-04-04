@@ -41,6 +41,7 @@ async function handleLogin(req, res) {
         point: user.point,
         email: email,
       });
+    console.log("로그인됨");
   } catch (err) {
     console.error("Login Error:", err);
     return res.status(500).json({ error: "내부 서버 오류가 발생하였습니다" });

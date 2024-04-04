@@ -1,4 +1,4 @@
-// models/inventorySnapshots.js
+// models/inventorySnapshot.js
 
 const Sequelize = require("sequelize");
 
@@ -31,8 +31,8 @@ module.exports = function (sequelize, DataTypes) {
     },
 
     {
-      tableName: "InventorySnapshots",
-      timestamps: false,
+      tableName: "InventorySnapshot",
+      timestamps: true,
     },
   );
   return InventorySnapshot;

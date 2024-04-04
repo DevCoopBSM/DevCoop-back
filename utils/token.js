@@ -84,17 +84,19 @@ function getTokens(req) {
 }
 
 const handleExpiredTokens = async (req, res) => {
-  const accessToken = getTokens(req).accessToken;
-  const refreshToken = getTokens(req).refreshToken;
-  console.log("Received refreshToken:", refreshToken); // 추가된 로깅
   try {
+    const refreshToken = getTokens(req).refreshToken;
+    console.log(req.cookies);
+    console.log("Received refreshToken:", refreshToken); // 추가된 로깅
     const user = await Users.findOne({ where: { ref_token: refreshToken } });
+
     if (!user) {
       await clearAllCookies(res);
-      res.redirect("/admin/login");
-      return res.status(302);
+      return res.redirect("/admin/login");
     }
-    console.log(user);
+
+    const accessToken = getTokens(req).accessToken;
+
     if (!verifyToken(accessToken)) {
       const newAccessToken = await genToken(
         user.email,
@@ -106,32 +108,28 @@ const handleExpiredTokens = async (req, res) => {
         message: "accToken is renewed",
       });
     }
-    accessToken = verifyToken(accessToken);
+
     if (!verifyToken(refreshToken)) {
       const newRefreshToken = await genToken(
-        accessToken.email,
-        accessToken.student_name,
+        user.email,
+        user.student_name,
         "14d",
       );
-      await updateToken("ref_token", accessToken.email, newRefreshToken);
+      await updateToken("ref_token", user.email, newRefreshToken);
       res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
-      res.redirect("/admin/login");
       return res.status(401).send({
         message: "refToken is renewed",
       });
     }
-    // 위의 조건 모두 실패하면 로그아웃 진행
+
+    // 모든 조건 실패 시 로그아웃
     await clearAllCookies(res);
-    res.redirect("/admin/login");
-    return res.status(302).send({
-      message: "Renewing Token is fail, logout",
-    });
+    return res.redirect("/admin/login");
   } catch (error) {
-    // 에러가 나도 로그아웃!
-    await clearAllCookies(res);
     console.error("Error in handleExpiredTokens:", error);
-    return res.status(302).send({
-      message: "handleExpiredTokens is Fail",
+    await clearAllCookies(res);
+    return res.status(500).send({
+      message: "Internal server error",
     });
   }
 };
