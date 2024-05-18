@@ -7,7 +7,7 @@ const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 app.use(express.json());
 const corsOptions = {
-  origin: ["http://10.10.0.11", "http://10.129.57.12", "http://localhost:7000"], // 외부, 내부 도메인
+  origin: "*",// 외부, 내부 도메인
   methods: "GET, POST, PUT, DELETE, OPTIONS", // 허용되는 HTTP 메서드
   allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept", // 허용되는 헤더
   credentials: true, // 요청에 인증 정보를 허용,
